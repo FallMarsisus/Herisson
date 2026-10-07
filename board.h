@@ -21,6 +21,7 @@ typedef struct board_t
 	int n_lines;
 	int n_rows;
 	int player ;
+	bool game_is_finished ;
 } board_t;
 
 board_t board_init();

@@ -15,10 +15,12 @@
 #include <time.h>
 
 typedef struct {int x1 ; int y1 ; int x2 ; int y2 ;} move ;
+enum step {VERTICAL, HORIZONTAL} ;
+typedef enum step step ;
 
+int min(int a, int b) ;
 int dice() ;
-void play_row(board_t* b) ;
-void play_line(board_t* b) ;
-move scan_move(board_t* b) ;
+int play_turn(board_t* b) ;
+move scan_move(board_t* b, step s, int dice_roll) ;
 
 #endif

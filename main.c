@@ -8,14 +8,7 @@
 
 int main(int argc, char** argv) {
 	srand(time(NULL));
-	test_board();
-
-	while(true) {
-
-
-
-		
-	}
+	test_play();
 
 
 	

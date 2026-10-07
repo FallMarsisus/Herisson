@@ -11,6 +11,7 @@
 #define GAME_SIZE_Y 6
 
 #define N_PLAYERS 4
+#define N_HEDGE 4
 
 #define N_TRAPS 4
 

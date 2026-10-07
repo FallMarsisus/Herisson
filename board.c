@@ -50,6 +50,7 @@ board_t board_init()
 	allocate_trap(&b, 5, 7);
 
 	b.player = 0 ;
+	b.game_is_finished = false ;
 
 	return b;
 }
@@ -116,7 +117,7 @@ char board_top(board_t *b, int line, int row)
 
 	int i = b->n_hedge[line][row];
 
-	return b->board[line][row][i];
+	return i>0 ? b->board[line][row][i-1]: '$';
 }
 
 char board_peek(board_t *b, int line, int row, int pos)
