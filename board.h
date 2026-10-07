@@ -6,7 +6,6 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "board.h"
 #include "primitives.h"
 #include <stdio.h>
 #include <assert.h>
@@ -21,6 +20,7 @@ typedef struct board_t
 	int *n_finished; // number of hedgehogs which finished the run per TEAM
 	int n_lines;
 	int n_rows;
+	int player ;
 } board_t;
 
 board_t board_init();

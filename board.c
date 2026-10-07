@@ -49,6 +49,8 @@ board_t board_init()
 	allocate_trap(&b, 4, 3); 
 	allocate_trap(&b, 5, 7);
 
+	b.player = 0 ;
+
 	return b;
 }
 
