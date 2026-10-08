@@ -13,7 +13,7 @@ int play_turn(board_t* b){
     static int winning_player = 0 ;
     for(int i = 0 ; i < 2 ; i += 1){
         move m = scan_move(b, i, dice_roll) ;
-        if(m.x1 == -1) break;
+        if(m.x1 == -1) continue;
         board_pop(b, m.x1, m.y1) ;
         board_push(b, m.x2, m.y2, b -> player + 'A') ;
         if(m.y2 == b -> n_rows-1){
@@ -59,7 +59,7 @@ move scan_move(board_t* b, step s, int dice_roll){
         if(s == HORIZONTAL){
             bool possible_move = false ;
             for(int j = 0 ; j < b -> n_rows-1 ; j += 1){
-                if(board_top(b, dice_roll-1, j) == b -> player + 'A'){
+                if(board_height(b, dice_roll-1, j) != 0){
                     possible_move = true ;
                     break ;
                 }
@@ -75,6 +75,11 @@ move scan_move(board_t* b, step s, int dice_roll){
         char input[50];
         fflush(stdin) ;
         ui_scanf(" %49[^\n]", input);
+        if (input[0] == 's' && input[1] == 'k' && input[2] == 'i' && input[3] == 'p') {
+            ui_printf("Skipping...\n");
+            m.x1 = -1;
+            return m;
+        }
         int i = 0 ;
         char x_input[5];
         char y_input[5];
@@ -99,13 +104,13 @@ move scan_move(board_t* b, step s, int dice_roll){
             }
             i += 1;
         }
-        unsigned int x_atoi = s==HORIZONTAL ? dice_roll+1 : atoi(x_input) ;
+        unsigned int x_atoi = s==HORIZONTAL ? dice_roll : atoi(x_input) ;
         unsigned int y_atoi = atoi(y_input) ;
         if(y_atoi == 0 || (x_atoi == 0)){
             ui_printf("It seems that your input is not a number.\n") ;
             continue ;
         }
-        if(x_atoi >= (unsigned int) b -> n_lines || y_atoi >= (unsigned int) b -> n_rows){
+        if(x_atoi > (unsigned int) b -> n_lines || y_atoi > (unsigned int) b -> n_rows){
             ui_printf("It seems that your input is outside the board.\n") ;
             continue ;
         }

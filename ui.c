@@ -3,6 +3,7 @@
 ui_mode mode;
 static board_t *last_board = NULL;
 static int gui_cursor = 5; 
+char history[1024];
 
 void ui_init(ui_mode m)
 {
@@ -26,6 +27,14 @@ void ui_free(void)
 #endif
 }
 
+void show_history() {
+    DrawText(history, 10, 10, 12, BLACK);
+}
+
+void flush_history() {
+    history[0] = '\0';
+}
+
 void ui_printf(const char *format, ...)
 {
     va_list args;
@@ -41,12 +50,8 @@ void ui_printf(const char *format, ...)
 #ifdef ENABLE_GUI
         char buffer[512];
         vsnprintf(buffer, sizeof(buffer), format, args);
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        ui_render_board(last_board, -1);
-        DrawText(buffer, 10, gui_cursor, 12, BLACK);
-        gui_cursor += 14;
-        EndDrawing();
+
+        strcat(history, buffer);
 
 #else
         printf("GUI is currently disabled on compilation, please compile with 'make gui' to enable it.\n");
@@ -135,7 +140,8 @@ int ui_scanf(const char *format, ...) {
             ClearBackground(RAYWHITE);
 
             gui_render_board(last_board, -1);
-
+            show_history();
+            
             DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
 
             DrawRectangleRec(box, WHITE);
@@ -161,6 +167,7 @@ int ui_scanf(const char *format, ...) {
 
             EndDrawing();
         }
+        flush_history();
 
         return ret;
     }
@@ -189,11 +196,46 @@ void ui_render_board(board_t *b, int highlighted_line)
         term_render_board(b, highlighted_line);
 }
 
+
+
 void gui_render_cell(board_t *b, int line, int row)
 {
 #ifdef ENABLE_GUI
 
-    DrawRectangle(SCREEN_WIDTH / 2 + 25 + (line) * (SCREEN_WIDTH / 2 - 50) / b->n_lines, 25 + (row) * (SCREEN_HEIGHT - 50) / b->n_rows, (SCREEN_WIDTH / 2 - 50) / b->n_lines - 10, (SCREEN_HEIGHT - 50) / b->n_rows - 10, BLACK);
+    Color list_teams[] = {RED, BLUE, GREEN, YELLOW};
+    int cell_width = (SCREEN_WIDTH / 2 - 50) / b->n_rows - 5;
+    int cell_height = (SCREEN_HEIGHT - 60) / b->n_lines - 10;
+    int cell_x = SCREEN_WIDTH / 2 + 25 + (row) * (SCREEN_WIDTH / 2 - 50) / b->n_rows ;
+    int cell_y = 30 + (line) * (SCREEN_HEIGHT - 60) / b->n_lines; 
+    if (board_height(b, line, row) == 0) {
+        DrawRectangle(cell_x, cell_y, cell_width, cell_height, BLACK);
+    }
+    else {
+        Color a = list_teams[board_top(b, line, row) - 'A'];
+        DrawRectangle(cell_x, cell_y, cell_width, cell_height, a);
+
+        int bh = board_height(b, line, row);
+        for(int i = bh-1; i >= 0; i--) {
+            Color a = list_teams[board_peek(b, line, row, bh - i) - 'A'];
+            int y = cell_y + cell_height - bh*10 + i*10;    
+            DrawRectangle(cell_x, y , cell_width, 10, a); 
+
+            DrawLine(cell_x, y, cell_width + cell_x, y ,BLACK);
+        }   
+    }
+    
+    
+
+
+    if(b->is_trapped[line][row]) {
+        int size = 3;
+        for(int i = 0; i < cell_width/size; i++) {
+            for (int j = 0; j < cell_height/size; j++) {
+                if(i%2 == 0 && j%2 == 1 || i%2 == 1 && j%2 == 0)
+                    DrawRectangle(cell_x + i*size, cell_y + j*size, size, size, LIGHTGRAY);
+            }
+        }
+    }
 #else
     printf("GUI is currently disabled on compilation, please compile with 'make gui' to enable it.\n");
 #endif
@@ -204,6 +246,18 @@ void gui_render_board(board_t *b, int highlighted_line)
 #ifdef ENABLE_GUI
 
     last_board = b;
+    for(int i =0; i < b->n_rows; i++) {
+        char yi[5]; 
+        sprintf(yi, "%d", i+1);
+        DrawText(yi, SCREEN_WIDTH / 2 + 25 + (i) * (SCREEN_WIDTH / 2 - 50) / b->n_rows, 10, 15, BLACK );
+    }
+
+    for(int j = 0; j < b->n_lines; j++) {
+        char xi[5];
+        sprintf(xi, "%d", j+1); 
+        DrawText(xi, SCREEN_WIDTH /2 + 10, 30 + (j) * (SCREEN_HEIGHT - 60) / b->n_lines,  15, BLACK);
+    }
+    
 
     for (int i = 0; i < b->n_lines; i++)
     {

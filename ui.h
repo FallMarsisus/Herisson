@@ -11,6 +11,7 @@
 #include "board.h"
 #include <assert.h>
 #include <stdarg.h>
+#include <string.h>
 
 typedef enum {
     UI_MODE_UNSET,
