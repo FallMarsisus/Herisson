@@ -8,6 +8,8 @@ int min(int a, int b){
     return(a < b ? a : b) ;
 }
 
+// changes the board
+// BUG: le jeu termine pas
 int play_turn(board_t* b){
     int dice_roll = dice() ;
     static int winning_player = 0 ;
@@ -34,6 +36,8 @@ int play_turn(board_t* b){
     return -1 ;
 }
 
+// only reads what the inputs, do not change the board
+// BUG : pas bons mouvements calculés
 move scan_move(board_t* b, step s, int dice_roll){
 	ui_render_board(b, 0);
     move m ;
@@ -79,11 +83,11 @@ move scan_move(board_t* b, step s, int dice_roll){
         ui_scanf(" %49[^\n]", input);
         if(strcmp(input, "skip") == 0){
             if(possible_move && s == HORIZONTAL){
-                printf("Sorry, you cannot skip.\n") ;
+                ui_printf("Sorry, you cannot skip.\n") ;
                 continue ;
             }
             else{
-                printf("You skipped.\n") ;
+                ui_printf("You skipped.\n") ;
                 m.x1 = -1 ;
                 return m ;
             }
