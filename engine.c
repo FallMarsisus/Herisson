@@ -46,16 +46,14 @@ move scan_move(board_t* b, step s, int dice_roll){
     ui_printf("Line you %s play horizontally: %d.\n", s == VERTICAL ? "will" : "", dice_roll) ;
     while(!is_correct){
         bool possible_move = false ;
-        char print_board_top = ' ' ;
         if(s == VERTICAL){
             possible_move = false ;
             for(int i = 0 ; i < b -> n_lines ; i += 1){
                 for(int j = 0 ; j < b -> n_rows-1 ; j += 1){
-                    if((print_board_top = board_top(b, i, j)) == b -> current_player + 'A'){
+                    if(board_top(b, i, j) == b -> current_player + 'A'){
                         possible_move = true ;
                         break ;
                     }
-                    i, j, print_board_top, b -> current_player + 'A', possible_move) ;
                 }
             }
             if(!possible_move){
