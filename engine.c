@@ -55,7 +55,6 @@ move scan_move(board_t* b, step s, int dice_roll){
                         possible_move = true ;
                         break ;
                     }
-                    ui_printf("scanmove: i:%d, j:%d, board_top:%c, current_player:%c, possible_move:%d\n\n",
                     i, j, print_board_top, b -> current_player + 'A', possible_move) ;
                 }
             }
