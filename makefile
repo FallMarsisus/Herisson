@@ -19,7 +19,7 @@ ifeq ($(UNAME_S), Darwin)
                    -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 else
     RAYLIB_FLAGS = $(shell pkg-config --cflags raylib 2>/dev/null)
-    RAYLIB_LIBS  = $(shell pkg-config --libs raylib 2>/dev/null || echo "-lraylib") -lm -lpthread -ldl
+    RAYLIB_LIBS  = $(shell pkg-config --libs --static raylib 2>/dev/null || echo "-lraylib -lGL -lm -lpthread -ldl -lrt -lX11")
 endif
 
 .PHONY: all gui clean
