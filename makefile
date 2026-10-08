@@ -3,11 +3,11 @@ CFLAGS = -Wall -Wextra -std=c99 -pedantic
 
 UNAME_S := $(shell uname -s)
 
-SRC_COMMON = board.c engine.c tests.c
+SRC_COMMON = board.c engine.c tests.c ui.c
 SRC_CLI    = main.c $(SRC_COMMON)
 OBJ_CLI    = $(SRC_CLI:.c=.o)
 
-SRC_GUI    = main.c $(SRC_COMMON) ui.c
+SRC_GUI    = main.c $(SRC_COMMON)
 OBJ_GUI    = $(SRC_GUI:.c=.o)
 
 EXEC = herisson

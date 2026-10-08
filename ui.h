@@ -10,6 +10,7 @@
 
 #include "board.h"
 #include <assert.h>
+#include <stdarg.h>
 
 typedef enum {
     UI_MODE_UNSET,
@@ -21,7 +22,8 @@ typedef enum {
 void ui_init(ui_mode m);
 void ui_free(void);
 void ui_printf(const char* format, ...);
-void ui_scanf(const char* format, ...);
+int ui_scanf(const char* format, ...); 
+
 
 // Main functions to use to draw the board
 void ui_render_cell(board_t* b, int line, int row, int slice);
