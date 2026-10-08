@@ -7,10 +7,10 @@
 #ifndef PRIMITIVES_H
 #define PRIMITIVES_H
 
-#define GAME_SIZE_X 9
-#define GAME_SIZE_Y 6
+#define GAME_SIZE_X 3
+#define GAME_SIZE_Y 2
 
-#define N_PLAYERS 4
+#define N_PLAYERS 2
 #define N_HEDGE 4
 
 #define N_TRAPS 4

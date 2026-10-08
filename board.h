@@ -21,7 +21,7 @@ typedef struct board_t
 	int *n_finished; // number of hedgehogs which finished the run per TEAM
 	int n_lines;
 	int n_rows;
-	int player ;
+	int current_player ;
 	bool game_is_finished ;
 } board_t;
 

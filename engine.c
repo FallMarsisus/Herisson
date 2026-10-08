@@ -17,20 +17,20 @@ int play_turn(board_t* b){
         char player = board_pop(b, m.x1, m.y1) ;
         board_push(b, m.x2, m.y2, player) ;
         if(m.y2 == b -> n_rows-1){
-            b -> n_finished[b -> player] += 1 ;
-            if(b -> n_finished[b -> player] == min(3, N_HEDGE -2)){
-                winning_player = b -> player ;
+            b -> n_finished[b -> current_player] += 1 ;
+            if(b -> n_finished[b -> current_player] == min(3, N_HEDGE -2)){
+                winning_player = b -> current_player ;
                 b -> game_is_finished = true ;
             }
         }
     }
     if(b -> game_is_finished){
-        if(b -> player == N_PLAYERS){
+        if(b -> current_player == N_PLAYERS){
             return winning_player ;
         }
     }
-    b -> player += 1 ;
-    b -> player %= N_PLAYERS ;
+    b -> current_player += 1 ;
+    b -> current_player %= N_PLAYERS ;
     return -1 ;
 }
 
@@ -38,7 +38,7 @@ move scan_move(board_t* b, step s, int dice_roll){
 	ui_render_board(b, 0);
     move m ;
     bool is_correct = false ;
-    ui_printf("Player %c is playing. ", b -> player + 'A') ;
+    ui_printf("Player %c is playing. ", b -> current_player + 'A') ;
     ui_printf("Line you %s play horizontally: %d.\n", s == VERTICAL ? "will" : "", dice_roll) ;
     while(!is_correct){
         bool possible_move = false ;
@@ -46,7 +46,7 @@ move scan_move(board_t* b, step s, int dice_roll){
             possible_move = false ;
             for(int i = 0 ; i < b -> n_lines-1 ; i += 1){
                 for(int j = 0 ; j < b -> n_rows-1 ; j += 1){
-                    if(board_top(b, i, j) == b -> player + 'A'){
+                    if(board_top(b, i, j) == b -> current_player + 'A'){
                         possible_move = true ;
                         break ;
                     }
@@ -154,7 +154,7 @@ move scan_move(board_t* b, step s, int dice_roll){
                 break ;
             case(VERTICAL):
                 m.y2 = y_atoi ;
-                if(board_top(b, x_atoi, y_atoi) != b -> player + 'A'){
+                if(board_top(b, x_atoi, y_atoi) != b -> current_player + 'A'){
                     ui_printf("You are trying to move the hedgehog of another player.\n") ;
                     continue ;
                 }

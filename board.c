@@ -1,15 +1,15 @@
 #include "board.h"
 
 
-void allocate_trap(board_t* b, int line, int row) {
-	if(line < b->n_lines && line >= 0 && row < b->n_rows && row >= 0 ) {
-		b->is_trapped[line][row] = true;
+void allocate_trap(board_t* b, int line, int row){
+	if(line < b->n_lines && line >= 0 && row < b->n_rows && row >= 0 ){
+		b->is_trapped[line][row] = true ;
 	}
 }
-
  
 board_t board_init(void)
 {
+	// creation+initialisation of board
 	board_t b;
 	b.n_lines = GAME_SIZE_Y;
 	b.n_rows = GAME_SIZE_X;
@@ -23,6 +23,7 @@ board_t board_init(void)
 		}
 	}
 
+	// creation+initialisation of other tables for hedges, traps and end blocks
 	b.n_hedge = malloc(sizeof(int *) * b.n_lines);
 	b.is_trapped = malloc(sizeof(bool *) * b.n_lines);
 	for (int i = 0; i < b.n_lines; i++)
@@ -35,13 +36,13 @@ board_t board_init(void)
 			b.is_trapped[i][j] = false;
 		}
 	}
-
 	b.n_finished = malloc(sizeof(int) * N_PLAYERS);
 	for (int i = 0; i < N_PLAYERS; i++)
 	{
 		b.n_finished[i] = 0;
 	}
 
+	// traps are places
 	allocate_trap(&b, 0, 2);
 	allocate_trap(&b, 1, 6);
 	allocate_trap(&b, 2, 4); 
@@ -49,7 +50,7 @@ board_t board_init(void)
 	allocate_trap(&b, 4, 3); 
 	allocate_trap(&b, 5, 7);
 
-	// hedges are placed
+	// hedges are placed randomly
 	int placed_hedgehogs = 0 ;
 	int* placed_hedgehog_player = malloc(sizeof(int)*N_PLAYERS) ;
 	for(int i = 0 ; i < N_PLAYERS ; i += 1){
@@ -64,8 +65,8 @@ board_t board_init(void)
 			placed_hedgehogs += 1 ;
 		}
 	}
-	
-	b.player = 0 ;
+
+	b.current_player = 0 ;
 	b.game_is_finished = false ;
 
 	return b;
@@ -98,7 +99,7 @@ void board_push(board_t *b, int line, int row, char ctn)
 
 	b->board[line][row][i] = ctn;
 
-	b->n_hedge[line][row]++; // just added an element;
+	b->n_hedge[line][row]++; // just added an element
 }
 
 char board_pop(board_t *b, int line, int row)
@@ -117,7 +118,7 @@ char board_pop(board_t *b, int line, int row)
 	return ' ';
 }
 
-// returns the number of hedgehogs in a specified place.
+// returns the number of hedgehogs in a specified place
 int board_height(board_t *b, int line, int row)
 {
 	assert(line >= 0 && line < b->n_lines);
@@ -126,6 +127,7 @@ int board_height(board_t *b, int line, int row)
 	return b->n_hedge[line][row];
 }
 
+// returns the topmost team of a block
 char board_top(board_t *b, int line, int row)
 {
 	assert(line >= 0 && line < b->n_lines);
@@ -133,9 +135,10 @@ char board_top(board_t *b, int line, int row)
 
 	int i = b->n_hedge[line][row];
 
-	return i>0 ? b->board[line][row][i-1]: '$';
+	return i>0 ? b->board[line][row][i-1]: ' ';
 }
 
+// returns the team of a specific hedgehog
 char board_peek(board_t *b, int line, int row, int pos)
 {
 	assert(line >= 0 && line < b->n_lines);
