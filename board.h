@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 
 typedef struct board_t
 {

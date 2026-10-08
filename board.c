@@ -49,6 +49,22 @@ board_t board_init(void)
 	allocate_trap(&b, 4, 3); 
 	allocate_trap(&b, 5, 7);
 
+	// hedges are placed
+	int placed_hedgehogs = 0 ;
+	int* placed_hedgehog_player = malloc(sizeof(int)*N_PLAYERS) ;
+	for(int i = 0 ; i < N_PLAYERS ; i += 1){
+		placed_hedgehog_player[i] = 0 ;
+	}
+	while(placed_hedgehogs != N_PLAYERS*N_HEDGE){
+		int player = rand()%N_PLAYERS ;
+		if(placed_hedgehog_player[player] != N_HEDGE){
+			int line = rand()%GAME_SIZE_Y ;
+			placed_hedgehog_player[player] += 1 ;
+			board_push(&b, line, 0, player + 'A') ;
+			placed_hedgehogs += 1 ;
+		}
+	}
+	
 	b.player = 0 ;
 	b.game_is_finished = false ;
 

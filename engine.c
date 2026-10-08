@@ -10,6 +10,7 @@ int min(int a, int b){
 
 int play_turn(board_t* b){
     int dice_roll = dice() ;
+    static int winning_player = 0 ;
     for(int i = 0 ; i < 2 ; i += 1){
         move m = scan_move(b, i, dice_roll) ;
         if(m.x1 == -1) break;
@@ -18,18 +19,19 @@ int play_turn(board_t* b){
         if(m.y2 == b -> n_rows-1){
             b -> n_finished[b -> player] += 1 ;
             if(b -> n_finished[b -> player] == min(3, N_HEDGE -2)){
+                winning_player = b -> player ;
                 b -> game_is_finished = true ;
             }
         }
     }
     if(b -> game_is_finished){
         if(b -> player == N_PLAYERS){
-            return 1 ;
+            return winning_player ;
         }
     }
     b -> player += 1 ;
     b -> player %= N_PLAYERS ;
-    return 0 ;
+    return -1 ;
 }
 
 move scan_move(board_t* b, step s, int dice_roll){
@@ -38,6 +40,22 @@ move scan_move(board_t* b, step s, int dice_roll){
     ui_printf("Player %c is playing.\n", b -> player + 'A') ;
     ui_printf("%d\n",dice_roll) ;
     while(!is_correct){
+        if(s == VERTICAL){
+            bool possible_move = false ;
+            for(int i = 0 ; i < b -> n_lines-1 ; i += 1){
+                for(int j = 0 ; j < b -> n_rows-1 ; j += 1){
+                    if(board_top(b, i, j) == b -> player + 'A'){
+                        possible_move = true ;
+                        break ;
+                    }
+                }
+            }
+            if(!possible_move){
+                ui_printf("Sorry, no possible move for you here.\n") ;
+                m.x1 = -1 ;
+                return m ;
+            }
+        }
         if(s == HORIZONTAL){
             bool possible_move = false ;
             for(int j = 0 ; j < b -> n_rows-1 ; j += 1){
@@ -53,6 +71,7 @@ move scan_move(board_t* b, step s, int dice_roll){
             }
         }
         ui_printf("(y%s) of the %s moving hedgehog.\n", s==VERTICAL ? ", x" : "", s== VERTICAL ? "vertically" : "horizontally") ;
+        if(s == VERTICAL) ui_printf("Press Enter to skip if you wish.\n") ;
         char input[50];
         fflush(stdin) ;
         ui_scanf(" %49[^\n]", input);
