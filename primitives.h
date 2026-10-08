@@ -7,6 +7,7 @@
 #ifndef PRIMITIVES_H
 #define PRIMITIVES_H
 
+// GAME SIZE X is the number of columns
 #define GAME_SIZE_X 3
 #define GAME_SIZE_Y 2
 

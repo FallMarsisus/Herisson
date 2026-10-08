@@ -9,7 +9,6 @@ int min(int a, int b){
 }
 
 // changes the board
-// BUG: le jeu termine pas
 int play_turn(board_t* b){
     int dice_roll = dice() ;
     static int winning_player = 0 ;
@@ -19,15 +18,15 @@ int play_turn(board_t* b){
         char player = board_pop(b, m.x1, m.y1) ;
         board_push(b, m.x2, m.y2, player) ;
         if(m.y2 == b -> n_rows-1){
-            b -> n_finished[b -> current_player] += 1 ;
-            if(b -> n_finished[b -> current_player] == min(3, N_HEDGE -2)){
-                winning_player = b -> current_player ;
+            b -> n_finished[(int) (player-'A')] += 1 ;
+            if(b -> n_finished[(int) (player-'A')] == min(3, N_HEDGE -2)){
+                winning_player = (int) (player-'A') ;
                 b -> game_is_finished = true ;
             }
         }
     }
     if(b -> game_is_finished){
-        if(b -> current_player == N_PLAYERS){
+        if(b -> current_player == N_PLAYERS-1){
             return winning_player ;
         }
     }
@@ -37,7 +36,6 @@ int play_turn(board_t* b){
 }
 
 // only reads what the inputs, do not change the board
-// BUG : pas bons mouvements calculés
 move scan_move(board_t* b, step s, int dice_roll){
 	ui_render_board(b, 0);
     move m ;
@@ -76,7 +74,7 @@ move scan_move(board_t* b, step s, int dice_roll){
                 return m ;
             }
         }
-        ui_printf("(y%s) of the %s moving hedgehog.\n", s==VERTICAL ? ", x" : "", s== VERTICAL ? "vertically" : "horizontally") ;
+        ui_printf("[y%s] of the %s moving hedgehog.\n", s==VERTICAL ? ", x" : "", s== VERTICAL ? "vertically" : "horizontally") ;
         if(s == VERTICAL) ui_printf("Write skip if you want to skip.\n") ;
         char input[50];
         fflush(stdin) ;
