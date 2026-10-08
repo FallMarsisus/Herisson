@@ -6,7 +6,7 @@ void allocate_trap(board_t* b, int line, int row){
 		b->is_trapped[line][row] = true ;
 	}
 }
- 
+
 board_t board_init(void)
 {
 	// creation+initialisation of board
@@ -118,7 +118,7 @@ char board_pop(board_t *b, int line, int row)
 	return ' ';
 }
 
-// returns the number of hedgehogs in a specified place
+// returns the number of hedgehogs in a specified block
 int board_height(board_t *b, int line, int row)
 {
 	assert(line >= 0 && line < b->n_lines);
@@ -153,4 +153,3 @@ char board_peek(board_t *b, int line, int row, int pos)
 	}
 	return ' ';
 }
-

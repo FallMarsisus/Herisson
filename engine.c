@@ -35,13 +35,13 @@ int play_turn(board_t* b){
     return -1 ;
 }
 
-// only reads what the inputs, do not change the board
+// only reads what the inputs, does not change the board
 move scan_move(board_t* b, step s, int dice_roll){
 	ui_render_board(b, 0);
     move m ;
     bool is_correct = false ;
-    ui_printf("Player %c is playing. ", b -> current_player + 'A') ;
-    ui_printf("Line you %s play horizontally: %d.\n", s == VERTICAL ? "will" : "", dice_roll) ;
+    ui_printf("Player %c is currently playing. ", b -> current_player + 'A') ;
+    ui_printf("Randomly selected line for the horizontal play: %d.\n", dice_roll) ;
     while(!is_correct){
         bool possible_move = false ;
         if(s == VERTICAL){
@@ -49,8 +49,10 @@ move scan_move(board_t* b, step s, int dice_roll){
             for(int i = 0 ; i < b -> n_lines ; i += 1){
                 for(int j = 0 ; j < b -> n_rows-1 ; j += 1){
                     if(board_top(b, i, j) == b -> current_player + 'A'){
-                        possible_move = true ;
-                        break ;
+                        if(!b -> is_trapped[i][j]){
+                            possible_move = true ;
+                            break ;
+                        }
                     }
                 }
             }
@@ -75,12 +77,12 @@ move scan_move(board_t* b, step s, int dice_roll){
             }
         }
         ui_printf("[y%s] of the %s moving hedgehog.\n", s==VERTICAL ? ", x" : "", s== VERTICAL ? "vertically" : "horizontally") ;
-        if(s == VERTICAL) ui_printf("Write skip if you want to skip.\n") ;
+        if(s == VERTICAL) ui_printf("Enter [skip] if you want to skip.\n") ;
         char input[50];
         fflush(stdin) ;
         ui_scanf(" %49[^\n]", input);
         if(strcmp(input, "skip") == 0){
-            if(possible_move && s == HORIZONTAL){
+            if(s == HORIZONTAL){
                 ui_printf("Sorry, you cannot skip.\n") ;
                 continue ;
             }
@@ -129,7 +131,7 @@ move scan_move(board_t* b, step s, int dice_roll){
         m.x1 = x_atoi ;
         m.y1 = y_atoi ;
         if(board_height(b, x_atoi, y_atoi) == 0){
-            ui_printf("It seems that there is no hedgehog in the block.\n") ;
+            ui_printf("It seems that you do not have a hedgehog in this block.\n") ;
             continue ;
         }
         if(b -> is_trapped[x_atoi][y_atoi]){
@@ -141,7 +143,7 @@ move scan_move(board_t* b, step s, int dice_roll){
                 }
             }
             if(found_hedgehog){
-                ui_printf("You are trying to move a trapped hedgehog. The blocks before the hedgehog need to be emptied to move.\n") ;
+                ui_printf("You are trying to move a trapped hedgehog. All the blocks before the hedgehog must be emptied to enable the move.\n") ;
                 continue ;
             }
         }
@@ -161,13 +163,15 @@ move scan_move(board_t* b, step s, int dice_roll){
                     continue ;
                 }
                 char side ;
-                ui_printf("Choose a direction to move the hedgehog : T for top or B for bottom.\n") ;
+                ui_printf("Choose a direction to move the hedgehog: [u] for up or [d] for down.\n") ;
                 ui_scanf(" %c", &side) ;
                 switch(side){
                     case('H'):
                     case('h'):
                     case('T'):
                     case('t'):
+                    case('U'):
+                    case('u'):
                         if(x_atoi == 0){
                             ui_printf("You cannot move higher.\n") ;
                             continue ;
@@ -176,6 +180,8 @@ move scan_move(board_t* b, step s, int dice_roll){
                         break ;
                     case('B'):
                     case('b'):
+                    case('D'):
+                    case('d'):
                         if(x_atoi == (unsigned int) b -> n_lines-1){
                             ui_printf("You cannot move lower.\n") ;
                             continue ;
@@ -183,7 +189,7 @@ move scan_move(board_t* b, step s, int dice_roll){
                         m.x2 = x_atoi + 1 ;
                         break ;
                     default :
-                        ui_printf("This is a wrong input.\n") ;
+                        ui_printf("It seems that you have made a mistake.\n") ;
                         continue ;
                 }
                 break ;

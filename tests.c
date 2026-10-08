@@ -20,7 +20,8 @@ void test_play(void){
 	int winning_player = 0 ;
 	while((winning_player=play_turn(&boa)) == -1){
 	}
-	ui_printf("Congratulations! Player %c has won the game!\n", winning_player + 'A') ;
+	ui_render_board(&boa, 0) ;
+	ui_printf("Congratulations! Player %c has won the game! ", winning_player + 'A') ;
 	ui_printf("Thank you for playing!\n") ;
 
 	board_free(boa);
