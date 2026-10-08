@@ -24,7 +24,7 @@ typedef struct board_t
 	bool game_is_finished ;
 } board_t;
 
-board_t board_init();
+board_t board_init(void);
 void board_free(board_t b);
 void board_push(board_t *b, int line, int row, char ctn);
 char board_pop(board_t *b, int line, int row);

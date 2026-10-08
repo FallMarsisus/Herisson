@@ -1,6 +1,6 @@
 #include "engine.h"
 
-int dice(){
+int dice(void){
     return rand()%GAME_SIZE_Y +1 ;
 }
 
@@ -86,7 +86,7 @@ move scan_move(board_t* b, step s, int dice_roll){
             printf("It seems that your input is not a number.\n") ;
             continue ;
         }
-        if(x_atoi >= b -> n_lines || y_atoi >= b -> n_rows){
+        if(x_atoi >= (unsigned int) b -> n_lines || y_atoi >= (unsigned int) b -> n_rows){
             printf("It seems that your input is outside the board.\n") ;
             continue ;
         }
@@ -101,7 +101,7 @@ move scan_move(board_t* b, step s, int dice_roll){
         }
         if(b -> is_trapped[x_atoi][y_atoi]){
             bool found_hedgehog = false ;
-            for(int j = 0 ; j < y_atoi ; j += 1){
+            for(int j = 0 ; (unsigned int) j < y_atoi ; j += 1){
                 if(board_height(b, x_atoi, j) > 0){
                     found_hedgehog = true ;
                     break ;
@@ -114,7 +114,7 @@ move scan_move(board_t* b, step s, int dice_roll){
         }
         switch(s){
             case(HORIZONTAL):
-                if(y_atoi == b -> n_rows -1){
+                if(y_atoi == (unsigned int) b -> n_rows -1){
                     printf("The hedgehog has already finished playing.\n") ;
                     continue ;
                 }
@@ -144,7 +144,7 @@ move scan_move(board_t* b, step s, int dice_roll){
                         break ;
                     case('B'):
                     case('b'):
-                        if(x_atoi == b -> n_lines-1){
+                        if(x_atoi == (unsigned int) b -> n_lines-1){
                             printf("You cannot move lower.\n") ;
                             continue ;
                         }

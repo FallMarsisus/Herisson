@@ -3,8 +3,9 @@
 
 #include "board.h"
 #include "engine.h"
+#include "ui.h"
 
-void test_board();
-void test_play();
+void test_board(void);
+void test_play(void);
 
 #endif

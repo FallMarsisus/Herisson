@@ -15,4 +15,9 @@
 
 #define N_TRAPS 4
 
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+#define CELL_SIZE 80
+
 #endif // primitives.h

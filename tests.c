@@ -9,7 +9,7 @@ void test_board()
 	board_push(&boa, 3, 4, 'C');
 	board_push(&boa, 3, 4, 'A');
 
-	board_print(&boa, 0);
+	ui_render_board(&boa, 0);
 
 	board_free(boa);
 }
