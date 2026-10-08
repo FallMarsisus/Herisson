@@ -8,7 +8,7 @@ void allocate_trap(board_t* b, int line, int row) {
 }
 
 
-board_t board_init()
+board_t board_init(void)
 {
 	board_t b;
 	b.n_lines = GAME_SIZE_Y;
@@ -135,13 +135,3 @@ char board_peek(board_t *b, int line, int row, int pos)
 	return ' ';
 }
 
-void cell_print(board_t *b, int line, int row, int slice)
-{
-
-
-}
-
-void board_print(board_t *b, int highlighted_line)
-{
-	
-}

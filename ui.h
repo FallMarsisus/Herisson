@@ -1,7 +1,13 @@
 #ifndef UI_H
 #define UI_H
 
+
+#ifdef ENABLE_GUI // to enable, compile with gui enabled
+
 #include <raylib.h>
+
+#endif // ENABLE_GUI
+
 #include "board.h"
 #include <assert.h>
 
@@ -11,7 +17,6 @@ typedef enum {
     UI_MODE_GRAPHIC
 } ui_mode; 
 
-ui_mode mode = UI_MODE_UNSET;
 
 void ui_init(ui_mode m);
 void ui_free(void);

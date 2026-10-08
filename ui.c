@@ -1,5 +1,7 @@
 #include "ui.h"
 
+ui_mode mode; 
+
 void ui_init(ui_mode m)
 {
     mode = m;
@@ -145,32 +147,46 @@ void term_render_cell(board_t *b, int line, int row, int slice)
 
 void term_render_board(board_t *b, int highlighted_line)
 {
-    // PERSO : pour l'instant n'affiche que les cases,
-    // affichera dans le futur le reste
 
+   // First row : show indices
+   printf("      ");
+   for(int i = 0; i < b->n_rows; i++) {
+        printf("y     ");
+   }
+   printf("\n      ");
+   for(int i = 0; i < b->n_rows; i++) {
+        printf(" %d    ", i+1);
+   }
+   printf("\n");
+
+
+   // ... then the board
     for (int i = 0; i < b->n_lines * 4; i++)
     {
 
-        for (int j = 0; j < b->n_rows; j++)
-        {
-            switch(i%4) {
+        switch(i%4) {
                 case 0:
-                    printf("    ");
+                    printf("     ");
                     break;
                 case 1:
-                    printf(" x: ");
+                    printf(" x   ");
                     break;
                 case 2:
-                    printf(" %d  ", i/4);
+                    printf("  %d  ", i/4 + 1);
                     break;
                 case 3: 
-                    printf("    ");
+                    printf("     ");
                     break; 
                 default:
                     break;
             }
 
-            cell_print(b, i / 4, j, i % 4);
+
+        for (int j = 0; j < b->n_rows; j++)
+        {
+            
+
+            ui_render_cell(b, i / 4, j, i % 4 );
             printf(" ");
         }
         i % 4 == 3 ? printf("\n\n") : printf("\n"); // Print a blank between each line

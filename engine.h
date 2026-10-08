@@ -1,6 +1,5 @@
-/* board.h
---> Used to define the main game structure, the main functions used with it,
-	along with the functions used to print the board
+/* engine.h
+--> Main logic and input functions
 */
 
 #ifndef ENGINE_H
