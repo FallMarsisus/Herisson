@@ -14,8 +14,8 @@ int play_turn(board_t* b){
     for(int i = 0 ; i < 2 ; i += 1){
         move m = scan_move(b, i, dice_roll) ;
         if(m.x1 == -1) continue;
-        board_pop(b, m.x1, m.y1) ;
-        board_push(b, m.x2, m.y2, b -> player + 'A') ;
+        char player = board_pop(b, m.x1, m.y1) ;
+        board_push(b, m.x2, m.y2, player) ;
         if(m.y2 == b -> n_rows-1){
             b -> n_finished[b -> player] += 1 ;
             if(b -> n_finished[b -> player] == min(3, N_HEDGE -2)){

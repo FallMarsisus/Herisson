@@ -7,7 +7,7 @@ void allocate_trap(board_t* b, int line, int row) {
 	}
 }
 
-
+ 
 board_t board_init(void)
 {
 	board_t b;
@@ -111,7 +111,7 @@ char board_pop(board_t *b, int line, int row)
 	if (i >= 1)
 	{
 		b->n_hedge[line][row]--;
-		return b->board[line][row][i];
+		return b->board[line][row][i-1];
 	}
 
 	return ' ';
