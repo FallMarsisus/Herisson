@@ -83,7 +83,6 @@ int ui_scanf(const char *format, ...) {
 
         int frames_counter = 0;
 
-        /* La boucle ne s'arrête que si la saisie correspond bien au format attendu */
         while (!valid_input) {
             if (WindowShouldClose()) {
                 return EOF;
@@ -91,7 +90,6 @@ int ui_scanf(const char *format, ...) {
 
             frames_counter++;
 
-            /* 1. Capture des caractères */
             int key = GetCharPressed();
             while (key > 0) {
                 if ((key >= 32) && (key <= 126) && (letter_count < (int)sizeof(input_text) - 1)) {
@@ -136,19 +134,13 @@ int ui_scanf(const char *format, ...) {
             BeginDrawing();
             ClearBackground(RAYWHITE);
 
-            if (last_board != NULL) {
-                for (int i = 0; i < last_board->n_lines; i++) {
-                    for (int j = 0; j < last_board->n_rows; j++) {
-                        gui_render_cell(last_board, i, j);
-                    }
-                }
-            }
+            gui_render_board(last_board, -1);
 
             DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
 
             DrawRectangleRec(box, WHITE);
             DrawRectangleLinesEx(box, 2, DARKGRAY);
-            DrawText("Saisie requise :", box.x + 20, box.y + 25, 20, BLACK);
+            DrawText("Input :", box.x + 20, box.y + 25, 20, BLACK);
 
             DrawRectangleRec(text_box, RAYWHITE);
             DrawRectangleLinesEx(text_box, 1.5f, show_error ? RED : DARKBLUE);
@@ -160,7 +152,7 @@ int ui_scanf(const char *format, ...) {
             }
 
             if (show_error) {
-                DrawText("Format invalide, recommencez !", box.x + 20, box.y + 195, 16, RED);
+                DrawText("Invalid format, restart", box.x + 20, box.y + 195, 16, RED);
             }
 
             DrawRectangleRec(btn_ok, mouse_on_btn ? SKYBLUE : BLUE);
@@ -213,8 +205,6 @@ void gui_render_board(board_t *b, int highlighted_line)
 
     last_board = b;
 
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
     for (int i = 0; i < b->n_lines; i++)
     {
         for (int j = 0; j < b->n_rows; j++)
@@ -222,7 +212,6 @@ void gui_render_board(board_t *b, int highlighted_line)
             ui_render_cell(b, i, j, -1);
         }
     }
-    EndDrawing();
 #else
     printf("GUI is currently disabled on compilation, please compile with 'make gui' to enable it.\n");
 #endif
