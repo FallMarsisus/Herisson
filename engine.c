@@ -35,13 +35,15 @@ int play_turn(board_t* b){
 }
 
 move scan_move(board_t* b, step s, int dice_roll){
+	ui_render_board(b, 0);
     move m ;
     bool is_correct = false ;
-    ui_printf("Player %c is playing.\n", b -> player + 'A') ;
-    ui_printf("%d\n",dice_roll) ;
+    ui_printf("Player %c is playing. ", b -> player + 'A') ;
+    ui_printf("Line you %s play horizontally: %d.\n", s == VERTICAL ? "will" : "", dice_roll) ;
     while(!is_correct){
+        bool possible_move = false ;
         if(s == VERTICAL){
-            bool possible_move = false ;
+            possible_move = false ;
             for(int i = 0 ; i < b -> n_lines-1 ; i += 1){
                 for(int j = 0 ; j < b -> n_rows-1 ; j += 1){
                     if(board_top(b, i, j) == b -> player + 'A'){
@@ -57,7 +59,7 @@ move scan_move(board_t* b, step s, int dice_roll){
             }
         }
         if(s == HORIZONTAL){
-            bool possible_move = false ;
+            possible_move = false ;
             for(int j = 0 ; j < b -> n_rows-1 ; j += 1){
                 if(board_height(b, dice_roll-1, j) != 0){
                     possible_move = true ;
@@ -71,14 +73,20 @@ move scan_move(board_t* b, step s, int dice_roll){
             }
         }
         ui_printf("(y%s) of the %s moving hedgehog.\n", s==VERTICAL ? ", x" : "", s== VERTICAL ? "vertically" : "horizontally") ;
-        if(s == VERTICAL) ui_printf("Press Enter to skip if you wish.\n") ;
+        if(s == VERTICAL) ui_printf("Write skip if you want to skip.\n") ;
         char input[50];
         fflush(stdin) ;
         ui_scanf(" %49[^\n]", input);
-        if (input[0] == 's' && input[1] == 'k' && input[2] == 'i' && input[3] == 'p') {
-            ui_printf("Skipping...\n");
-            m.x1 = -1;
-            return m;
+        if(strcmp(input, "skip") == 0){
+            if(possible_move && s == HORIZONTAL){
+                printf("Sorry, you cannot skip.\n") ;
+                continue ;
+            }
+            else{
+                printf("You skipped.\n") ;
+                m.x1 = -1 ;
+                return m ;
+            }
         }
         int i = 0 ;
         char x_input[5];

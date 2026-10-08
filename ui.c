@@ -28,7 +28,9 @@ void ui_free(void)
 }
 
 void show_history() {
+    #ifdef ENABLE_GUI
     DrawText(history, 10, 10, 12, BLACK);
+    #endif
 }
 
 void flush_history() {

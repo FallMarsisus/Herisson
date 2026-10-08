@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <string.h>
 
 typedef struct {int x1 ; int y1 ; int x2 ; int y2 ;} move ;
 enum step {VERTICAL, HORIZONTAL} ;

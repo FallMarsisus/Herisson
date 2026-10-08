@@ -17,11 +17,8 @@ void test_board(void)
 void test_play(void){
 	board_t boa = board_init();
 
-	ui_render_board(&boa, 0);
-
 	int winning_player = 0 ;
 	while((winning_player=play_turn(&boa)) == -1){
-		ui_render_board(&boa, 0);
 	}
 	printf("Congratulations! Player %d has won the game!\n", winning_player) ;
 	printf("Thank you for playing!\n") ;
