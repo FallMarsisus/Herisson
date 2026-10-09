@@ -46,7 +46,7 @@ void test_score(void){
 	}
 	// indice i : nb herissons a la fin, indice j : team
 	for(int i = 0 ; i < N_PLAYERS ; i += 1){
-		int nb_hedge = boa.n_finished[i] ;
+		int nb_hedge = boa.n_finished[i] ; // normalement toujours dans le bon intervalle
 		int indice = 0 ;
 		while(indice < N_PLAYERS && trier_team[nb_hedge][indice] != -1){ // normalement la premiere condition ne devrait jamais faire non
 			indice += 1 ;
@@ -66,11 +66,17 @@ void test_score(void){
 		ui_printf("\b\b\b|]\n") ;
 	}*/
 
+	int rank = 1 ;
 	for(int i = N_HEDGE-1 ; i >= 0 ; i -= 1){
+		bool there_is_a_player = false ;
 		for(int j = 0 ; j < N_PLAYERS ; j += 1){
 			if(trier_team[i][j] != -1){
-				ui_printf("Rank #%d: team %c with %d hedgehog%s.\n", N_HEDGE-i, j+'A', i, i > 1 ? "s" : "") ;
+				ui_printf("Rank #%d: team %c with %d hedgehog%s.\n", rank, trier_team[i][j]+'A', i, i > 1 ? "s" : "") ;
+				there_is_a_player = true ;
 			}
+		}
+		if(there_is_a_player){
+			rank += 1 ;
 		}
 	}
 
