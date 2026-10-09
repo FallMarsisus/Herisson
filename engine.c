@@ -8,7 +8,7 @@ int min(int a, int b){
     return(a < b ? a : b) ;
 }
 
-// changes the board
+// recieves the inputs, changes the board ("setter")
 int play_turn(board_t* b){
     int dice_roll = dice() ;
     static int winning_player = 0 ;
@@ -35,12 +35,12 @@ int play_turn(board_t* b){
     return -1 ;
 }
 
-// only reads what the inputs, does not change the board
+// only reads what the inputs, does not change the board ("getter")
 move scan_move(board_t* b, step s, int dice_roll){
-	ui_render_board(b, 0);
+	ui_render_board(b, dice_roll-1);
     move m ;
     bool is_correct = false ;
-    ui_printf("Player %c is currently playing. ", b -> current_player + 'A') ;
+    ui_printf("Player %c is currently playing. \n", b -> current_player + 'A') ;
     ui_printf("Randomly selected line for the horizontal play: %d.\n", dice_roll) ;
     while(!is_correct){
         bool possible_move = false ;
@@ -59,6 +59,7 @@ move scan_move(board_t* b, step s, int dice_roll){
             if(!possible_move){
                 ui_printf("Sorry, no possible move for you here.\n") ;
                 m.x1 = -1 ;
+                ui_show(); // Let the user acknowledge
                 return m ;
             }
         }
@@ -73,6 +74,7 @@ move scan_move(board_t* b, step s, int dice_roll){
             if(!possible_move){
                 ui_printf("Sorry, no possible move for you here.\n") ;
                 m.x1 = -1 ;
+                ui_show();
                 return m ;
             }
         }
@@ -93,8 +95,8 @@ move scan_move(board_t* b, step s, int dice_roll){
             }
         }
         int i = 0 ;
-        char x_input[5];
-        char y_input[5];
+        char x_input[5] = {'\0'};
+        char y_input[5] = {'\0'};
         int ind = 0 ;
         bool is_sep = false ;
         while(input[i] != '\0'){
@@ -108,8 +110,10 @@ move scan_move(board_t* b, step s, int dice_roll){
                 ind += 1 ;
             }
             else{
-                if(ind > 0){
+                if(ind > 0 ){
+                    if(s == HORIZONTAL) break;
                     if(is_sep == true) break;
+
                     is_sep = true ;
                     ind = 0 ;
                 }
@@ -194,6 +198,7 @@ move scan_move(board_t* b, step s, int dice_roll){
                 }
                 break ;
         }
+
         is_correct=true;
     }
     return m ;

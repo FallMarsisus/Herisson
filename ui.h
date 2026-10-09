@@ -30,6 +30,8 @@ int ui_scanf(const char* format, ...);
 void ui_render_cell(board_t* b, int line, int row, int slice);
 void ui_render_board(board_t* b, int highlighted_line);
 
+void ui_show(void); 
+
 
 // Private functions used to target a specific interface.
 

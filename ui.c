@@ -1,9 +1,9 @@
 #include "ui.h"
 
 ui_mode mode;
-static board_t *last_board = NULL;
-static int gui_cursor = 5; 
-char history[1024];
+static board_t *last_board = NULL; // used to easily redraw the board on user interaction
+int last_highlight = -1; 
+char history[1024]; // used to show text to the user
 
 void ui_init(ui_mode m)
 {
@@ -29,7 +29,7 @@ void ui_free(void)
 
 void show_history() {
     #ifdef ENABLE_GUI
-    DrawText(history, 10, 10, 12, BLACK);
+    DrawText(history, 10, 10, 20, BLACK);
     #endif
 }
 
@@ -141,7 +141,7 @@ int ui_scanf(const char *format, ...) {
             BeginDrawing();
             ClearBackground(RAYWHITE);
 
-            gui_render_board(last_board, -1);
+            gui_render_board(last_board, last_highlight);
             show_history();
             
             DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
@@ -175,6 +175,65 @@ int ui_scanf(const char *format, ...) {
     }
 #endif
     return 0;
+}
+
+void ui_show(void) {
+    if (mode == UI_MODE_TERM) {
+        printf("Press enter to continue \n");
+        fflush(stdin);
+        getchar();
+        return; 
+    }
+    
+    if (mode == UI_MODE_GRAPHIC) {
+        #ifdef ENABLE_GUI   
+
+        float left_panel_w = SCREEN_WIDTH / 2.0f;
+        float box_w = left_panel_w - 60.0f;
+        float box_h = 60.0f; 
+
+        Rectangle box = { 30.0f, (SCREEN_HEIGHT - box_h) / 2.0f, box_w, box_h };
+        Rectangle btn_ok = { box.x + (box_w)  - 140.0f, box.y + 10.0f, 120.0f, 40.0f };
+
+        bool submit = false;
+                while (!submit) {
+            if (WindowShouldClose()) {
+                return;
+            }
+
+
+                    Vector2 mouse = GetMousePosition();
+            bool mouse_on_btn = CheckCollisionPointRec(mouse, btn_ok);
+             submit = IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER) ||
+                          (mouse_on_btn && IsMouseButtonPressed(MOUSE_BUTTON_LEFT));
+
+
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        gui_render_board(last_board, last_highlight);
+        show_history();
+        
+        DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
+
+        DrawRectangleRec(box, WHITE);
+        DrawRectangleLinesEx(box, 2, DARKGRAY);
+        DrawText("Press OK to continue", box.x + 18, box.y + 25, 20, BLACK);
+
+        
+        
+        DrawRectangleRec(btn_ok, mouse_on_btn ? LIGHTGRAY : GRAY);
+        DrawRectangleLinesEx(btn_ok, 1, DARKBLUE);
+        DrawText("OK", btn_ok.x + 45, btn_ok.y + 10, 20, WHITE);
+
+        EndDrawing();
+    }
+
+        flush_history();
+
+        #endif
+    }
+
 }
 
 /// Render a cell, slice is only used when using the terminal, use -1 if necessary
@@ -217,8 +276,8 @@ void gui_render_cell(board_t *b, int line, int row)
         DrawRectangle(cell_x, cell_y, cell_width, cell_height, a);
 
         int bh = board_height(b, line, row);
-        for(int i = bh-1; i >= 0; i--) {
-            Color a = list_teams[board_peek(b, line, row, bh - i) - 'A'];
+        for(int i = 1; i < bh; i++) {
+            Color a = list_teams[board_peek(b, line, row, bh - 1 - i) - 'A'];
             int y = cell_y + cell_height - bh*10 + i*10;    
             DrawRectangle(cell_x, y , cell_width, 10, a); 
 
@@ -233,7 +292,7 @@ void gui_render_cell(board_t *b, int line, int row)
         int size = 3;
         for(int i = 0; i < cell_width/size; i++) {
             for (int j = 0; j < cell_height/size; j++) {
-                if(i%2 == 0 && j%2 == 1 || i%2 == 1 && j%2 == 0)
+                if((i%2 == 0 && j%2 == 1) || (i%2 == 1 && j%2 == 0))
                     DrawRectangle(cell_x + i*size, cell_y + j*size, size, size, LIGHTGRAY);
             }
         }
@@ -249,20 +308,26 @@ void gui_render_board(board_t *b, int highlighted_line)
 
     last_board = b;
     for(int i =0; i < b->n_rows; i++) {
-        char yi[5]; 
+        char yi[8]; 
         sprintf(yi, "%d", i+1);
         DrawText(yi, SCREEN_WIDTH / 2 + 25 + (i) * (SCREEN_WIDTH / 2 - 50) / b->n_rows, 10, 15, BLACK );
     }
 
     for(int j = 0; j < b->n_lines; j++) {
-        char xi[5];
+        if (j == highlighted_line) {
+            DrawRectangle(SCREEN_WIDTH /2 + 5, 25 + (j) * (SCREEN_HEIGHT - 60) / b->n_lines, (SCREEN_WIDTH- 60)/2, (1) * (SCREEN_HEIGHT - 60)  / b->n_lines , YELLOW);
+            last_highlight = highlighted_line;
+        }
+        char xi[8];
         sprintf(xi, "%d", j+1); 
         DrawText(xi, SCREEN_WIDTH /2 + 10, 30 + (j) * (SCREEN_HEIGHT - 60) / b->n_lines,  15, BLACK);
+
     }
     
 
     for (int i = 0; i < b->n_lines; i++)
     {
+
         for (int j = 0; j < b->n_rows; j++)
         {
             ui_render_cell(b, i, j, -1);
@@ -383,20 +448,21 @@ void term_render_board(board_t *b, int highlighted_line)
     // ... then the board
     for (int i = 0; i < b->n_lines * 4; i++)
     {
+        char selected = highlighted_line==i/4?'>':' ';
 
         switch (i % 4)
         {
         case 0:
-            printf("     ");
+            printf("%c    ", selected);
             break;
         case 1:
-            printf(" x   ");
+            printf("%c x  ", selected);
             break;
         case 2:
-            printf("  %d  ", i / 4 + 1);
+            printf("%c  %d ", selected, i / 4 + 1);
             break;
         case 3:
-            printf("     ");
+            printf("%c    ", selected);
             break;
         default:
             break;
