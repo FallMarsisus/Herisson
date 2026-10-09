@@ -7,5 +7,6 @@
 
 void test_board(void);
 void test_play(void);
+void test_score(void) ;
 
 #endif

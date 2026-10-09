@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 		ui_init(UI_MODE_TERM);
 	}
 	
-	test_play();
+	test_score();
 
 	
 	ui_free();
