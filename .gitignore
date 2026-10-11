@@ -1,5 +1,5 @@
 engine.h.pch
 board.h.pch
 primitives.h.pch
-.vscode
+.vscode/
 *.o
