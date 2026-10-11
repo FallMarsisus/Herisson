@@ -37,18 +37,18 @@ void test_score(void){
 	ui_printf("Congratulations! Player %c has won the game! ", winning_player + 'A') ;
 	ui_printf("Thank you for playing!\n") ;
 
-	int** trier_team = malloc(sizeof(int*)*N_HEDGE) ; // PERSO: techniquement des teams peuvent avoir > 3 herissons a la fin
+	int** trier_team = malloc(sizeof(int*)*N_HEDGE) ;
 	for(int i = 0 ; i < N_HEDGE ; i += 1){
 		trier_team[i] = malloc(sizeof(int)*N_PLAYERS) ;
 		for(int j = 0 ; j < N_PLAYERS ; j += 1){
 			trier_team[i][j] = -1 ;
 		}
 	}
-	// indice i : nb herissons a la fin, indice j : team
+	// i : number of hedgehogs // j : team
 	for(int i = 0 ; i < N_PLAYERS ; i += 1){
-		int nb_hedge = boa.n_finished[i] ; // normalement toujours dans le bon intervalle
+		int nb_hedge = boa.n_finished[i] ;
 		int indice = 0 ;
-		while(indice < N_PLAYERS && trier_team[nb_hedge][indice] != -1){ // normalement la premiere condition ne devrait jamais faire non
+		while(indice < N_PLAYERS && trier_team[nb_hedge][indice] != -1){ 
 			indice += 1 ;
 		}
 		if(indice >= N_PLAYERS){
@@ -57,14 +57,6 @@ void test_score(void){
 		}
 		trier_team[nb_hedge][indice] = i ;
 	}
-
-/*	for(int i = 0 ; i < N_HEDGE ; i += 1){
-		ui_printf("[|") ;
-		for(int j = 0 ; j < N_PLAYERS ; j += 1){
-			ui_printf("%d ; ", trier_team[i][j]) ;
-		}
-		ui_printf("\b\b\b|]\n") ;
-	}*/
 
 	int rank = 1 ;
 	for(int i = N_HEDGE-1 ; i >= 0 ; i -= 1){
@@ -83,7 +75,10 @@ void test_score(void){
 	for(int i = 0 ; i < N_HEDGE ; i += 1){
 		free(trier_team[i]) ;
 	}
+
 	free(trier_team) ;
+
+	ui_show();
 
 	board_free(boa);
 }

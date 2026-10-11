@@ -84,7 +84,7 @@ int ui_scanf(const char *format, ...) {
         float left_panel_w = SCREEN_WIDTH / 2.0f;
         float box_w = left_panel_w - 60.0f;
         float box_h = 240.0f;
-        Rectangle box = { 30.0f, (SCREEN_HEIGHT - box_h) / 2.0f, box_w, box_h };
+        Rectangle box = { 30.0f, (SCREEN_HEIGHT - box_h) - 30, box_w, box_h };
         Rectangle text_box = { box.x + 20.0f, box.y + 80.0f, box_w - 40.0f, 40.0f };
         Rectangle btn_ok = { box.x + (box_w - 120.0f) / 2.0f, box.y + 140.0f, 120.0f, 40.0f };
 
@@ -192,7 +192,7 @@ void ui_show(void) {
         float box_w = left_panel_w - 60.0f;
         float box_h = 60.0f; 
 
-        Rectangle box = { 30.0f, (SCREEN_HEIGHT - box_h) / 2.0f, box_w, box_h };
+        Rectangle box = { 30.0f, (SCREEN_HEIGHT - box_h) -30,  box_w, box_h };
         Rectangle btn_ok = { box.x + (box_w)  - 140.0f, box.y + 10.0f, 120.0f, 40.0f };
 
         bool submit = false;
