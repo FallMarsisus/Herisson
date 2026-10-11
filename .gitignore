@@ -2,8 +2,4 @@ engine.h.pch
 board.h.pch
 primitives.h.pch
 .vscode
-engine.o
-board.o
-main.o
-tests.o
-herisson
+*.o
