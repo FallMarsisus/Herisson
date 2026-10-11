@@ -50,7 +50,7 @@ board_t board_init(void)
 	allocate_trap(&b, 4, 3); 
 	allocate_trap(&b, 5, 7);
 
-	// hedges are placed randomly
+	// hedges are randomly placed
 	int placed_hedgehogs = 0 ;
 	int* placed_hedgehog_player = malloc(sizeof(int)*N_PLAYERS) ;
 	for(int i = 0 ; i < N_PLAYERS ; i += 1){

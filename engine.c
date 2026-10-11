@@ -35,7 +35,7 @@ int play_turn(board_t* b){
     return -1 ;
 }
 
-// only reads what the inputs, does not change the board ("getter")
+// only reads the inputs, does not change the board ("getter")
 move scan_move(board_t* b, step s, int dice_roll){
 	ui_render_board(b, dice_roll-1);
     move m ;
@@ -123,7 +123,7 @@ move scan_move(board_t* b, step s, int dice_roll){
         unsigned int x_atoi = s==HORIZONTAL ? dice_roll : atoi(x_input) ;
         unsigned int y_atoi = atoi(y_input) ;
         if(y_atoi == 0 || (x_atoi == 0)){
-            ui_printf("It seems that your input is not a number.\n") ;
+            ui_printf("It seems that your input is not a number or that you have forgotten a coordinate.\n") ;
             continue ;
         }
         if(x_atoi > (unsigned int) b -> n_lines || y_atoi > (unsigned int) b -> n_rows){
@@ -135,7 +135,7 @@ move scan_move(board_t* b, step s, int dice_roll){
         m.x1 = x_atoi ;
         m.y1 = y_atoi ;
         if(board_height(b, x_atoi, y_atoi) == 0){
-            ui_printf("It seems that you do not have a hedgehog in this block.\n") ;
+            ui_printf("It seems that you do not have a hedgehog to move in this block.\n") ;
             continue ;
         }
         if(b -> is_trapped[x_atoi][y_atoi]){

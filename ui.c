@@ -160,7 +160,7 @@ int ui_scanf(const char *format, ...) {
             }
 
             if (show_error) {
-                DrawText("Invalid format, restart", box.x + 20, box.y + 195, 16, RED);
+                DrawText("Invalid format, restart.", box.x + 20, box.y + 195, 16, RED);
             }
 
             DrawRectangleRec(btn_ok, mouse_on_btn ? SKYBLUE : BLUE);
@@ -179,7 +179,7 @@ int ui_scanf(const char *format, ...) {
 
 void ui_show(void) {
     if (mode == UI_MODE_TERM) {
-        printf("Press enter to continue \n");
+        printf("Press [enter] to continue.\n");
         fflush(stdin);
         getchar();
         return; 
@@ -218,7 +218,7 @@ void ui_show(void) {
 
         DrawRectangleRec(box, WHITE);
         DrawRectangleLinesEx(box, 2, DARKGRAY);
-        DrawText("Press OK to continue", box.x + 18, box.y + 25, 20, BLACK);
+        DrawText("Press [OK] to continue.", box.x + 18, box.y + 25, 20, BLACK);
 
         
         
