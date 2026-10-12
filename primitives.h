@@ -1,6 +1,7 @@
 /*  primitives.h
 
---> Used to centralised constants, and essential structures used along the program
+--> Used to centralised constants, and essential structures used along the
+program
 
 */
 
@@ -13,9 +14,6 @@
 
 #define N_PLAYERS 2 // <= 4 && > 0
 #define N_HEDGE 4
-
-#define N_TRAPS 4
-
 
 #define SCREEN_WIDTH 1360
 #define SCREEN_HEIGHT 768
