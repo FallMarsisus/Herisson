@@ -97,6 +97,7 @@ int main(int argc, char **argv) {
   for (int i = 0; i < N_HEDGE; i += 1) {
     free(score_team[i]);
   }
+
   free(score_team);
 
   board_free(boa);
