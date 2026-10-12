@@ -93,75 +93,76 @@ int ui_scanf(const char *format, ...) {
 
       frames_counter++;
 
-            int key = GetCharPressed();
-            while (key > 0) {
-                if ((key >= 32) && (key <= 126) && (letter_count < (int)sizeof(input_text) - 1)) {
-                    input_text[letter_count] = (char)key;
-                    input_text[letter_count + 1] = '\0';
-                    letter_count++;
-                    show_error = false;
-                }
-                key = GetCharPressed();
-            }
+      int key = GetCharPressed();
+      while (key > 0) {
+        if ((key >= 32) && (key <= 126) &&
+            (letter_count < (int)sizeof(input_text) - 1)) {
+          input_text[letter_count] = (char)key;
+          input_text[letter_count + 1] = '\0';
+          letter_count++;
+          show_error = false;
+        }
+        key = GetCharPressed();
+      }
 
-            if (IsKeyPressed(KEY_BACKSPACE)) {
-                if (letter_count > 0) {
-                    letter_count--;
-                    input_text[letter_count] = '\0';
-                    show_error = false;
-                }
-            }
+      if (IsKeyPressed(KEY_BACKSPACE)) {
+        if (letter_count > 0) {
+          letter_count--;
+          input_text[letter_count] = '\0';
+          show_error = false;
+        }
+      }
 
-            Vector2 mouse = GetMousePosition();
-            bool mouse_on_btn = CheckCollisionPointRec(mouse, btn_ok);
-            bool submit = IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER) ||
-                          (mouse_on_btn && IsMouseButtonPressed(MOUSE_BUTTON_LEFT));
+      Vector2 mouse = GetMousePosition();
+      bool mouse_on_btn = CheckCollisionPointRec(mouse, btn_ok);
+      bool submit = IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER) ||
+                    (mouse_on_btn && IsMouseButtonPressed(MOUSE_BUTTON_LEFT));
 
-            if (submit) {
-                if (letter_count > 0) {
-                    va_list args;
-                    va_start(args, format);
-                    ret = vsscanf(input_text, format, args);
-                    va_end(args);
+      if (submit) {
+        if (letter_count > 0) {
+          va_list args;
+          va_start(args, format);
+          ret = vsscanf(input_text, format, args);
+          va_end(args);
 
-                    if (ret > 0) {
-                        valid_input = true;
-                    } else {
-                        show_error = true; 
-                    }
-                } else {
-                    show_error = true;
-                }
-            }
+          if (ret > 0) {
+            valid_input = true;
+          } else {
+            show_error = true;
+          }
+        } else {
+          show_error = true;
+        }
+      }
 
-            BeginDrawing();
-            ClearBackground(RAYWHITE);
+      BeginDrawing();
+      ClearBackground(RAYWHITE);
 
-            gui_render_board(last_board, last_highlight);
-            show_history();
-            
-            DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
+      gui_render_board(last_board, last_highlight);
+      show_history();
 
-            DrawRectangleRec(box, WHITE);
-            DrawRectangleLinesEx(box, 2, DARKGRAY);
-            DrawText("Input :", box.x + 20, box.y + 25, 20, BLACK);
+      DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
 
-            DrawRectangleRec(text_box, RAYWHITE);
-            DrawRectangleLinesEx(text_box, 1.5f, show_error ? RED : DARKBLUE);
-            DrawText(input_text, text_box.x + 10, text_box.y + 10, 20, DARKGRAY);
+      DrawRectangleRec(box, WHITE);
+      DrawRectangleLinesEx(box, 2, DARKGRAY);
+      DrawText("Input :", box.x + 20, box.y + 25, 20, BLACK);
 
-            if ((frames_counter / 30) % 2 == 0) {
-                int text_w = MeasureText(input_text, 20);
-                DrawText("|", text_box.x + 10 + text_w, text_box.y + 8, 22, DARKBLUE);
-            }
+      DrawRectangleRec(text_box, RAYWHITE);
+      DrawRectangleLinesEx(text_box, 1.5f, show_error ? RED : DARKBLUE);
+      DrawText(input_text, text_box.x + 10, text_box.y + 10, 20, DARKGRAY);
 
-            if (show_error) {
-                DrawText("Invalid format, restart.", box.x + 20, box.y + 195, 16, RED);
-            }
+      if ((frames_counter / 30) % 2 == 0) {
+        int text_w = MeasureText(input_text, 20);
+        DrawText("|", text_box.x + 10 + text_w, text_box.y + 8, 22, DARKBLUE);
+      }
 
-            DrawRectangleRec(btn_ok, mouse_on_btn ? SKYBLUE : BLUE);
-            DrawRectangleLinesEx(btn_ok, 1, DARKBLUE);
-            DrawText("OK", btn_ok.x + 45, btn_ok.y + 10, 20, WHITE);
+      if (show_error) {
+        DrawText("Invalid format, restart.", box.x + 20, box.y + 195, 16, RED);
+      }
+
+      DrawRectangleRec(btn_ok, mouse_on_btn ? SKYBLUE : BLUE);
+      DrawRectangleLinesEx(btn_ok, 1, DARKBLUE);
+      DrawText("OK", btn_ok.x + 45, btn_ok.y + 10, 20, WHITE);
 
       EndDrawing();
     }
@@ -174,65 +175,59 @@ int ui_scanf(const char *format, ...) {
 }
 
 void ui_show(void) {
-    if (mode == UI_MODE_TERM) {
-        printf("Press [enter] to continue.\n");
-        fflush(stdin);
-        getchar();
-        return; 
-    }
-    
-    if (mode == UI_MODE_GRAPHIC) {
-        #ifdef ENABLE_GUI   
+  if (mode == UI_MODE_TERM) {
+    printf("Press [enter] to continue.\n");
+    fflush(stdin);
+    getchar();
+    return;
+  }
 
-        float left_panel_w = SCREEN_WIDTH / 2.0f;
-        float box_w = left_panel_w - 60.0f;
-        float box_h = 60.0f; 
+  if (mode == UI_MODE_GRAPHIC) {
+#ifdef ENABLE_GUI
 
-        Rectangle box = { 30.0f, (SCREEN_HEIGHT - box_h) -30,  box_w, box_h };
-        Rectangle btn_ok = { box.x + (box_w)  - 140.0f, box.y + 10.0f, 120.0f, 40.0f };
+    float left_panel_w = SCREEN_WIDTH / 2.0f;
+    float box_w = left_panel_w - 60.0f;
+    float box_h = 60.0f;
 
-        bool submit = false;
-                while (!submit) {
-            if (WindowShouldClose()) {
-                exit(0);
-                return;
-            }
+    Rectangle box = {30.0f, (SCREEN_HEIGHT - box_h) - 30, box_w, box_h};
+    Rectangle btn_ok = {box.x + (box_w)-140.0f, box.y + 10.0f, 120.0f, 40.0f};
 
+    bool submit = false;
+    while (!submit) {
+      if (WindowShouldClose()) {
+        exit(0);
+        return;
+      }
 
-                    Vector2 mouse = GetMousePosition();
-            bool mouse_on_btn = CheckCollisionPointRec(mouse, btn_ok);
-             submit = IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER) ||
-                          (mouse_on_btn && IsMouseButtonPressed(MOUSE_BUTTON_LEFT));
+      Vector2 mouse = GetMousePosition();
+      bool mouse_on_btn = CheckCollisionPointRec(mouse, btn_ok);
+      submit = IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER) ||
+               (mouse_on_btn && IsMouseButtonPressed(MOUSE_BUTTON_LEFT));
 
+      BeginDrawing();
+      ClearBackground(RAYWHITE);
 
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
+      gui_render_board(last_board, last_highlight);
+      show_history();
 
-        gui_render_board(last_board, last_highlight);
-        show_history();
-        
-        DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
+      DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
 
-        DrawRectangleRec(box, WHITE);
-        DrawRectangleLinesEx(box, 2, DARKGRAY);
-        DrawText("Press [OK] to continue.", box.x + 18, box.y + 25, 20, BLACK);
+      DrawRectangleRec(box, WHITE);
+      DrawRectangleLinesEx(box, 2, DARKGRAY);
+      DrawText("Press [OK] to continue.", box.x + 18, box.y + 25, 20, BLACK);
 
-        
-        
-        DrawRectangleRec(btn_ok, mouse_on_btn ? LIGHTGRAY : GRAY);
-        DrawRectangleLinesEx(btn_ok, 1, DARKBLUE);
-        DrawText("OK", btn_ok.x + 45, btn_ok.y + 10, 20, WHITE);
+      DrawRectangleRec(btn_ok, mouse_on_btn ? LIGHTGRAY : GRAY);
+      DrawRectangleLinesEx(btn_ok, 1, DARKBLUE);
+      DrawText("OK", btn_ok.x + 45, btn_ok.y + 10, 20, WHITE);
 
-        EndDrawing();
+      EndDrawing();
     }
 
-        flush_history();
+    flush_history();
 
-        #endif
-    }
-
+#endif
+  }
 }
-
 
 /// Render a cell, slice is only used when using the terminal, use -1 if
 /// necessary
