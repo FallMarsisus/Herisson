@@ -91,7 +91,7 @@ int ui_scanf(const char *format, ...) {
         return EOF;
       }
 
-      frames_counter++;
+      frames_counter += 1;
 
       int key = GetCharPressed();
       while (key > 0) {
@@ -99,7 +99,7 @@ int ui_scanf(const char *format, ...) {
             (letter_count < (int)sizeof(input_text) - 1)) {
           input_text[letter_count] = (char)key;
           input_text[letter_count + 1] = '\0';
-          letter_count++;
+          letter_count += 1;
           show_error = false;
         }
         key = GetCharPressed();
@@ -276,7 +276,7 @@ void gui_render_cell(board_t *b, int line, int row) {
     DrawRectangle(cell_x, cell_y, cell_width, cell_height, a);
 
     int bh = board_height(b, line, row);
-    for (int i = 1; i < bh; i++) {
+    for (int i = 1; i < bh; i += 1) {
       Color a = list_teams[board_peek(b, line, row, bh - 1 - i) - 'A'];
       int y = cell_y + cell_height - bh * 10 + i * 10;
       DrawRectangle(cell_x, y, cell_width, 10, a);
@@ -287,8 +287,8 @@ void gui_render_cell(board_t *b, int line, int row) {
 
   if (b->is_trapped[line][row]) {
     int size = 3;
-    for (int i = 0; i < cell_width / size; i++) {
-      for (int j = 0; j < cell_height / size; j++) {
+    for (int i = 0; i < cell_width / size; i += 1) {
+      for (int j = 0; j < cell_height / size; j += 1) {
         if ((i % 2 == 0 && j % 2 == 1) || (i % 2 == 1 && j % 2 == 0))
           DrawRectangle(cell_x + i * size, cell_y + j * size, size, size,
                         LIGHTGRAY);
@@ -303,7 +303,7 @@ void gui_render_cell(board_t *b, int line, int row) {
 void gui_render_board(board_t *b, int highlighted_line) {
 
   last_board = b;
-  for (int i = 0; i < b->n_rows; i++) {
+  for (int i = 0; i < b->n_rows; i += 1) {
     char yi[8];
     sprintf(yi, "%d", i + 1);
     DrawText(yi,
@@ -311,7 +311,7 @@ void gui_render_board(board_t *b, int highlighted_line) {
              10, 15, BLACK);
   }
 
-  for (int j = 0; j < b->n_lines; j++) {
+  for (int j = 0; j < b->n_lines; j += 1) {
     if (j == highlighted_line) {
       DrawRectangle(SCREEN_WIDTH / 2 + 5,
                     25 + (j) * (SCREEN_HEIGHT - 60) / b->n_lines,
@@ -325,9 +325,9 @@ void gui_render_board(board_t *b, int highlighted_line) {
              30 + (j) * (SCREEN_HEIGHT - 60) / b->n_lines, 15, BLACK);
   }
 
-  for (int i = 0; i < b->n_lines; i++) {
+  for (int i = 0; i < b->n_lines; i += 1) {
 
-    for (int j = 0; j < b->n_rows; j++) {
+    for (int j = 0; j < b->n_rows; j += 1) {
       ui_render_cell(b, i, j, -1);
     }
   }
@@ -344,7 +344,7 @@ void term_render_cell(board_t *b, int line, int row, int slice) {
 
   switch (n_hedge) {
   case 4:
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i += 1)
       snd_line[i] = b->board[line][row][2 - i] - ('A' - 'a');
     break;
   case 3:
@@ -353,11 +353,11 @@ void term_render_cell(board_t *b, int line, int row, int slice) {
     snd_line[2] = b->board[line][row][0] - ('A' - 'a');
     break;
   case 2:
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i += 1)
       snd_line[i] = b->board[line][row][0] - ('A' - 'a');
     break;
   case 1:
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i += 1)
       snd_line[i] = b->board[line][row][0];
     break;
   default: // More than 4, only show first 4
@@ -366,17 +366,17 @@ void term_render_cell(board_t *b, int line, int row, int slice) {
     break;
   }
   if (n_hedge > 0) {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i += 1)
       fst_line[i] = b->board[line][row][n_hedge - 1];
   } else {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i += 1) {
       fst_line[i] = ' ';
       snd_line[i] = ' ';
     }
   }
 
   if (is_trapped) {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i += 1)
       thd_line[i] = '^';
   } else {
     thd_line[0] = '-';
@@ -411,17 +411,17 @@ void term_render_board(board_t *b, int highlighted_line) {
 
   // First row : show indices
   printf("      ");
-  for (int i = 0; i < b->n_rows; i++) {
+  for (int i = 0; i < b->n_rows; i += 1) {
     printf("y     ");
   }
   printf("\n      ");
-  for (int i = 0; i < b->n_rows; i++) {
+  for (int i = 0; i < b->n_rows; i += 1) {
     printf(" %d    ", i + 1);
   }
   printf("\n");
 
   // ... then the board
-  for (int i = 0; i < b->n_lines * 4; i++) {
+  for (int i = 0; i < b->n_lines * 4; i += 1) {
     char selected = highlighted_line == i / 4 ? '>' : ' ';
 
     switch (i % 4) {
@@ -441,7 +441,7 @@ void term_render_board(board_t *b, int highlighted_line) {
       break;
     }
 
-    for (int j = 0; j < b->n_rows; j++) {
+    for (int j = 0; j < b->n_rows; j += 1) {
 
       ui_render_cell(b, i / 4, j, i % 4);
       printf(" ");

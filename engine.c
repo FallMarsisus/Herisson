@@ -135,7 +135,7 @@ move scan_move(board_t *b, step s, int dice_roll) {
     m.y1 = y_atoi;
     if (board_height(b, x_atoi, y_atoi) == 0) {
       ui_printf(
-          "It seems that you do not have a hedgehog to move in this block.\n");
+          "It seems that you do not have a hedgehog to move in this cel.\n");
       continue;
     }
     if (b->is_trapped[x_atoi][y_atoi]) {
@@ -147,7 +147,7 @@ move scan_move(board_t *b, step s, int dice_roll) {
         }
       }
       if (found_hedgehog) {
-        ui_printf("You are trying to move a trapped hedgehog. All the blocks "
+        ui_printf("You are trying to move a trapped hedgehog. All the cells "
                   "before the hedgehog must be emptied to enable the move.\n");
         continue;
       }

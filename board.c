@@ -7,31 +7,31 @@ void allocate_trap(board_t *b, int line, int row) {
 }
 
 board_t board_init(void) {
-  // creation+initialisation of board
+  // creation+initialization of board
   board_t b;
   b.n_lines = GAME_SIZE_Y;
   b.n_rows = GAME_SIZE_X;
   b.board = malloc(sizeof(char **) * b.n_lines);
-  for (int i = 0; i < b.n_lines; i++) {
+  for (int i = 0; i < b.n_lines; i += 1) {
     b.board[i] = malloc(sizeof(char *) * b.n_rows);
-    for (int j = 0; j < b.n_rows; j++) {
+    for (int j = 0; j < b.n_rows; j += 1) {
       b.board[i][j] = malloc(sizeof(char) * N_PLAYERS);
     }
   }
 
-  // creation+initialisation of other tables for hedges, traps and end blocks
+  // creation+initialization of other tables for hedges, traps and end cells
   b.n_hedge = malloc(sizeof(int *) * b.n_lines);
   b.is_trapped = malloc(sizeof(bool *) * b.n_lines);
-  for (int i = 0; i < b.n_lines; i++) {
+  for (int i = 0; i < b.n_lines; i += 1) {
     b.n_hedge[i] = malloc(sizeof(int) * b.n_rows);
     b.is_trapped[i] = malloc(sizeof(bool) * b.n_rows);
-    for (int j = 0; j < b.n_rows; j++) {
+    for (int j = 0; j < b.n_rows; j += 1) {
       b.n_hedge[i][j] = 0;
       b.is_trapped[i][j] = false;
     }
   }
   b.n_finished = malloc(sizeof(int) * N_PLAYERS);
-  for (int i = 0; i < N_PLAYERS; i++) {
+  for (int i = 0; i < N_PLAYERS; i += 1) {
     b.n_finished[i] = 0;
   }
 
@@ -66,8 +66,8 @@ board_t board_init(void) {
 }
 
 void board_free(board_t b) {
-  for (int i = 0; i < b.n_lines; i++) {
-    for (int j = 0; j < b.n_rows; j++) {
+  for (int i = 0; i < b.n_lines; i += 1) {
+    for (int j = 0; j < b.n_rows; j += 1) {
       free(b.board[i][j]);
     }
     free(b.board[i]);
@@ -88,7 +88,7 @@ void board_push(board_t *b, int line, int row, char ctn) {
 
   b->board[line][row][i] = ctn;
 
-  b->n_hedge[line][row]++; // just added an element
+  b->n_hedge[line][row] += 1; // just added an element
 }
 
 char board_pop(board_t *b, int line, int row) {
@@ -105,7 +105,7 @@ char board_pop(board_t *b, int line, int row) {
   return ' ';
 }
 
-// returns the number of hedgehogs in a specified block
+// returns the number of hedgehogs in a specified cell
 int board_height(board_t *b, int line, int row) {
   assert(line >= 0 && line < b->n_lines);
   assert(row >= 0 && row < b->n_rows);
@@ -113,7 +113,7 @@ int board_height(board_t *b, int line, int row) {
   return b->n_hedge[line][row];
 }
 
-// returns the topmost team of a block
+// returns the topmost team of a cell
 char board_top(board_t *b, int line, int row) {
   assert(line >= 0 && line < b->n_lines);
   assert(row >= 0 && row < b->n_rows);
