@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     printf("[ERROR] Wrong player count !");
     return -1;
   }
-  if (N_PLAYERS < 4) {
+  if (N_PLAYERS > 4) {
     printf("[WARNING] This number of players will throw an error in GUI mode, "
            "which wasn't designed to play with > 4 players.\n");
   }
