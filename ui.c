@@ -177,8 +177,9 @@ int ui_scanf(const char *format, ...) {
 void ui_show(void) {
   if (mode == UI_MODE_TERM) {
     printf("Press [enter] to continue.\n");
-    fflush(stdin);
-    getchar();
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+      ;
     return;
   }
 
