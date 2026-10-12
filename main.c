@@ -42,13 +42,15 @@ int main(int argc, char **argv) {
 #ifdef ENABLE_GUI
     ui_init(UI_MODE_GRAPHIC);
 #else
-      printf("[ERROR] To use GUI mode, you need to compile with `make gui` and install dependencies\n");
-      exit(1);
+    printf("[ERROR] To use GUI mode, you need to compile with `make gui` and "
+           "install dependencies\n");
+    exit(1);
+#endif
   } else {
     ui_init(UI_MODE_TERM);
   }
 
-   board_t boa = board_init();
+  board_t boa = board_init();
 
   int winning_player;
   while ((winning_player = play_turn(&boa)) == -1) {
