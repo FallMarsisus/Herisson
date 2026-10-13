@@ -98,6 +98,8 @@ int main(int argc, char **argv) {
     free(score_team[i]);
   }
 
+  ui_showt();
+
   free(score_team);
 
   board_free(boa);
