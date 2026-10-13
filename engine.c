@@ -56,7 +56,7 @@ move scan_move(board_t *b, step s, int dice_roll) {
       if (!possible_move) {
         ui_printf("Sorry, no possible move for you here.\n");
         m.x1 = -1;
-        ui_show(); // Let the user acknowledge
+        ui_show(b); // Let the user acknowledge
         return m;
       }
     }
@@ -71,7 +71,7 @@ move scan_move(board_t *b, step s, int dice_roll) {
       if (!possible_move) {
         ui_printf("Sorry, no possible move for you here.\n");
         m.x1 = -1;
-        ui_show();
+        ui_show(b);
         return m;
       }
     }
@@ -135,7 +135,7 @@ move scan_move(board_t *b, step s, int dice_roll) {
     m.y1 = y_atoi;
     if (board_height(b, x_atoi, y_atoi) == 0) {
       ui_printf(
-          "It seems that you do not have a hedgehog to move in this cel.\n");
+          "It seems that you do not have a hedgehog to move in this cell.\n");
       continue;
     }
     if (b->is_trapped[x_atoi][y_atoi]) {

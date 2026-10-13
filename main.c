@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
   }
   if (N_PLAYERS > 4) {
     printf("[WARNING] This number of players will throw an error in GUI mode, "
-           "which wasn't designed to play with > 4 players.\n");
+           "which wasn't designed to play with more than 4 players.\n");
   }
 
   if (N_HEDGE <= 0) {
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
   }
 
   if (SCREEN_WIDTH <= 0 || SCREEN_HEIGHT <= 0 || CELL_SIZE <= 0) {
-    printf("[ERROR] Wrong gui dimensions\n");
+    printf("[ERROR] Wrong GUI dimensions\n");
     return -1;
   }
 
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
     free(score_team[i]);
   }
 
-  ui_showt();
+  ui_show(&boa);
 
   free(score_team);
 

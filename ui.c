@@ -174,12 +174,13 @@ int ui_scanf(const char *format, ...) {
   return 0;
 }
 
-void ui_show(void) {
+void ui_show(board_t* b) {
   if (mode == UI_MODE_TERM) {
-    printf("Press [enter] to continue.\n");
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF)
-      ;
+    if(!b -> game_is_finished){
+      int c;
+      while ((c = getchar()) != '\n' && c != EOF)
+        ;
+    }
     return;
   }
 
