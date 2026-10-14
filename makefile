@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -g
 
 UNAME_S := $(shell uname -s)
 
-SRC_COMMON = board.c engine.c tests.c ui.c
+SRC_COMMON = board.c engine.c tests.c ui.c all_move.c
 SRC_CLI    = main.c $(SRC_COMMON)
 OBJ_CLI    = $(SRC_CLI:.c=.o)
 

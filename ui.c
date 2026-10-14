@@ -174,13 +174,11 @@ int ui_scanf(const char *format, ...) {
   return 0;
 }
 
-void ui_show(board_t* b) {
+void ui_show() {
   if (mode == UI_MODE_TERM) {
-    if(!b -> game_is_finished){
       int c;
       while ((c = getchar()) != '\n' && c != EOF)
         ;
-    }
     return;
   }
 

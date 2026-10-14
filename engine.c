@@ -9,12 +9,13 @@ int play_turn(board_t *b) {
   int dice_roll = dice();
   static int winning_player = 0;
   for (int i = 0; i < 2; i += 1) {
-    move m = scan_move(b, i, dice_roll);
-    if (m.x1 == -1)
+    move *m = malloc(sizeof(move));
+    m = scan_move(b, i, dice_roll);
+    if (m -> x1 == -1)
       continue;
-    char player = board_pop(b, m.x1, m.y1);
-    board_push(b, m.x2, m.y2, player);
-    if (m.y2 == b->n_rows - 1) {
+    char player = board_pop(b, m -> x1, m -> y1);
+    board_push(b, m -> x2, m -> y2, player);
+    if (m -> y2 == b->n_rows - 1) {
       b->n_finished[(int)(player - 'A')] += 1;
       if (b->n_finished[(int)(player - 'A')] == min(3, N_HEDGE - 2)) {
         winning_player = (int)(player - 'A');
@@ -32,17 +33,9 @@ int play_turn(board_t *b) {
   return -1;
 }
 
-// only reads the inputs, does not change the board ("getter")
-move scan_move(board_t *b, step s, int dice_roll) {
-  ui_render_board(b, dice_roll - 1);
-  move m;
-  bool is_correct = false;
-  ui_printf("Player %c is currently playing. \n", b->current_player + 'A');
-  ui_printf("Randomly selected line for the horizontal play: %d.\n", dice_roll);
-  while (!is_correct) {
-    bool possible_move = false;
+bool test_possible_move(board_t* b, step s, int dice_roll){
+  bool possible_move = false ;
     if (s == VERTICAL) {
-      possible_move = false;
       for (int i = 0; i < b->n_lines; i += 1) {
         for (int j = 0; j < b->n_rows - 1; j += 1) {
           if (board_top(b, i, j) == b->current_player + 'A') {
@@ -55,13 +48,11 @@ move scan_move(board_t *b, step s, int dice_roll) {
       }
       if (!possible_move) {
         ui_printf("Sorry, no possible move for you here.\n");
-        m.x1 = -1;
-        ui_show(b); // Let the user acknowledge
-        return m;
+        ui_show(); // Let the user acknowledge
+        return possible_move;
       }
     }
     if (s == HORIZONTAL) {
-      possible_move = false;
       for (int j = 0; j < b->n_rows - 1; j += 1) {
         if (board_height(b, dice_roll - 1, j) != 0) {
           possible_move = true;
@@ -70,78 +61,102 @@ move scan_move(board_t *b, step s, int dice_roll) {
       }
       if (!possible_move) {
         ui_printf("Sorry, no possible move for you here.\n");
-        m.x1 = -1;
-        ui_show(b);
-        return m;
+        ui_show();
+        return possible_move;
       }
     }
-    ui_printf("[y%s] of the %s moving hedgehog.\n", s == VERTICAL ? ", x" : "",
-              s == VERTICAL ? "vertically" : "horizontally");
-    if (s == VERTICAL)
-      ui_printf("Enter [skip] if you want to skip.\n");
+    return possible_move;
+}
+
+int input_2_coordinate(unsigned int* x_atoi, unsigned int* y_atoi, step s, int dice_roll){
+  // 0: error, -1: skip, 1: ok
     char input[50];
     fflush(stdin);
     ui_scanf(" %49[^\n]", input);
     if (strcmp(input, "skip") == 0) {
       if (s == HORIZONTAL) {
         ui_printf("Sorry, you cannot skip.\n");
-        continue;
+        return 0;
       } else {
         ui_printf("You skipped.\n");
-        m.x1 = -1;
-        return m;
+        return -1;
       }
     }
-    int i = 0;
+    int ind_input = 0;
+    int ind_xy = 0;
     char x_input[5] = {'\0'};
     char y_input[5] = {'\0'};
-    int ind = 0;
     bool is_sep = false;
-    while (input[i] != '\0') {
-      if ('0' <= input[i] && input[i] <= '9') {
+    while (input[ind_input] != '\0') {
+      if ('0' <= input[ind_input] && input[ind_input] <= '9') {
         if (is_sep && s == VERTICAL) {
-          x_input[ind] = input[i];
+          x_input[ind_xy] = input[ind_input];
         } else {
-          y_input[ind] = input[i];
+          y_input[ind_xy] = input[ind_input];
         }
-        ind += 1;
+        ind_xy += 1;
       } else {
-        if (ind > 0) {
+        if (ind_xy > 0) {
           if (s == HORIZONTAL)
             break;
           if (is_sep == true)
             break;
 
           is_sep = true;
-          ind = 0;
+          ind_xy = 0;
         }
       }
-      i += 1;
+      ind_input += 1;
     }
-    unsigned int x_atoi = s == HORIZONTAL ? dice_roll : atoi(x_input);
-    unsigned int y_atoi = atoi(y_input);
-    if (y_atoi == 0 || (x_atoi == 0)) {
-      ui_printf("It seems that your input is not a number or that you have "
-                "forgotten a coordinate.\n");
+    x_atoi[0] = (unsigned int) s == HORIZONTAL ? dice_roll : atoi(x_input);
+    y_atoi[0] = (unsigned int) atoi(y_input);
+    return 1;
+}
+
+// only reads the inputs, does not change the board ("getter")
+move *scan_move(board_t *b, step s, int dice_roll) {
+  ui_render_board(b, dice_roll - 1);
+  move *m = malloc(sizeof(move));
+  bool is_correct = false;
+  ui_printf("Player %c is currently playing. \n", b->current_player + 'A');
+  ui_printf("Randomly selected line for the horizontal play: %d.\n", dice_roll);
+  while (!is_correct) {
+    bool possible_move = test_possible_move(b, s, dice_roll);
+    if(!possible_move){
+      m->x1 = -1;
+      return m;
+    }
+    ui_printf("[y%s] of the %s moving hedgehog.\n", s == VERTICAL ? ", x" : "",
+              s == VERTICAL ? "vertically" : "horizontally");
+    if (s == VERTICAL)
+      ui_printf("Enter [skip] if you want to skip.\n");
+    unsigned int x_atoi[1];
+    unsigned int y_atoi[1];
+    int i2c = input_2_coordinate(x_atoi, y_atoi, s, dice_roll);
+    while(i2c ==0){
+      i2c = input_2_coordinate(x_atoi, y_atoi, s, dice_roll);
+    }
+    if(i2c == -1){
+      m->x1 = -1;
+      return m;
+    }
+    bool input_is_correct = test_input_is_correct(b, x_atoi[0], y_atoi[0]);
+    if(!input_is_correct){
       continue;
     }
-    if (x_atoi > (unsigned int)b->n_lines || y_atoi > (unsigned int)b->n_rows) {
-      ui_printf("It seems that your input is outside the board.\n");
-      continue;
-    }
-    x_atoi -= 1;
-    y_atoi -= 1;
-    m.x1 = x_atoi;
-    m.y1 = y_atoi;
-    if (board_height(b, x_atoi, y_atoi) == 0) {
+    x_atoi[0] -= 1;
+    y_atoi[0] -= 1;
+    m->x1 = x_atoi[0];
+    m->y1 = y_atoi[0];
+    if (board_height(b, x_atoi[0], y_atoi[0]) == 0) {
       ui_printf(
           "It seems that you do not have a hedgehog to move in this cell.\n");
       continue;
     }
-    if (b->is_trapped[x_atoi][y_atoi]) {
+    if (b->is_trapped[x_atoi[0]][y_atoi[0]]) {
       bool found_hedgehog = false;
-      for (int j = 0; (unsigned int)j < y_atoi; j += 1) {
-        if (board_height(b, x_atoi, j) > 0) {
+      for (int j = 0; (unsigned int)j < y_atoi[0]; j += 1) {
+        if (board_height(b, x_atoi[0], j) > 0) {
           found_hedgehog = true;
           break;
         }
@@ -152,52 +167,16 @@ move scan_move(board_t *b, step s, int dice_roll) {
         continue;
       }
     }
+    if (y_atoi[0] == (unsigned int)b->n_rows - 1) {
+      ui_printf("The hedgehog has already finished playing.\n");
+      continue;
+    }
     switch (s) {
     case (HORIZONTAL):
-      if (y_atoi == (unsigned int)b->n_rows - 1) {
-        ui_printf("The hedgehog has already finished playing.\n");
-        continue;
-      }
-      m.x2 = x_atoi;
-      m.y2 = y_atoi + 1;
+      am_horizontal(b, m, x_atoi, y_atoi);
       break;
     case (VERTICAL):
-      m.y2 = y_atoi;
-      if (board_top(b, x_atoi, y_atoi) != b->current_player + 'A') {
-        ui_printf("You are trying to move the hedgehog of another player.\n");
-        continue;
-      }
-      char side;
-      ui_printf("Choose a direction to move the hedgehog: [u] for up or [d] "
-                "for down.\n");
-      ui_scanf(" %c", &side);
-      switch (side) {
-      case ('H'):
-      case ('h'):
-      case ('T'):
-      case ('t'):
-      case ('U'):
-      case ('u'):
-        if (x_atoi == 0) {
-          ui_printf("You cannot move higher.\n");
-          continue;
-        }
-        m.x2 = x_atoi - 1;
-        break;
-      case ('B'):
-      case ('b'):
-      case ('D'):
-      case ('d'):
-        if (x_atoi == (unsigned int)b->n_lines - 1) {
-          ui_printf("You cannot move lower.\n");
-          continue;
-        }
-        m.x2 = x_atoi + 1;
-        break;
-      default:
-        ui_printf("It seems that you have made a mistake.\n");
-        continue;
-      }
+      am_vertical(b, m, x_atoi, y_atoi);
       break;
     }
 
