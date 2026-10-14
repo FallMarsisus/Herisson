@@ -78,13 +78,13 @@ int valabs(int a) { return (a < 0 ? (-a) : a); }
 
 // test if the move is diagonal, vertical, or horizontal
 int test_move_is_ok(move *m) {
-  // 0: error, 1: horizontal, 2: vertical, 3: diagonal
+  // 0: error, 1: vertical, 2: horizontal, 3: diagonal
   int cell_is_correct = 0;
-  if (m->x1 == m->x2) {
-    cell_is_correct = 2;
-  }
   if (m->y1 == m->y2) {
     cell_is_correct = 1;
+  }
+  if (m->x1 == m->x2) {
+    cell_is_correct = 2;
   }
   if (!cell_is_correct) {
     if (valabs(m->x1 - m->x2) == valabs(m->y1 - m->y2)) {
