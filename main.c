@@ -36,8 +36,19 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  if (argc > 1 &&
-      (strcmp(argv[1], "--gui") == 0 || strcmp(argv[1], "-g") == 0)) {
+  bool is_gui = false;
+  bool is_am = false;
+
+  for(int i = 1; i < argc; i++) {
+    if(strcmp(argv[i], "--gui") == 0 || strcmp(argv[i], "-g") == 0) {
+      is_gui = true;
+    }
+    if(strcmp(argv[i], "-am") == 0 || strcmp(argv[i], "--all-move") == 0) {
+      is_am = true;
+    }
+  }
+
+  if (is_gui) {
 #ifdef ENABLE_GUI
     ui_init(UI_MODE_GRAPHIC);
 #else
@@ -48,8 +59,13 @@ int main(int argc, char **argv) {
   } else {
     ui_init(UI_MODE_TERM);
   }
-
-  am_mode_init(ALL_MOVE);
+  
+  if(is_am) {
+    am_mode_init(ALL_MOVE);
+  } else {
+    am_mode_init(CLASSIC);
+  }
+  
 
   board_t boa = board_init();
 
