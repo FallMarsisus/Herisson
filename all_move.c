@@ -124,6 +124,7 @@ void am_assign_move_horizontal(board_t *b, move *m, unsigned int *x_atoi,
         for (int i = min_x; i < max_x; i += 1) {
           if (b->is_trapped[i][m->y1]) {
             m->x2 = i;
+            break;
           }
         }
         move_is_correct = true;
@@ -132,6 +133,7 @@ void am_assign_move_horizontal(board_t *b, move *m, unsigned int *x_atoi,
         for (int j = min_y; j < max_y; j += 1) {
           if (b->is_trapped[m->x1][j]) {
             m->y2 = j;
+            break;
           }
         }
         move_is_correct = true;
@@ -225,6 +227,7 @@ int am_assign_move_vertical(board_t *b, move *m, unsigned int *x_atoi,
         for (int i = min_x; i < max_x; i += 1) {
           if (b->is_trapped[i][m->y1]) {
             m->x2 = i;
+            break;
           }
         }
         move_is_correct = true;
@@ -233,6 +236,7 @@ int am_assign_move_vertical(board_t *b, move *m, unsigned int *x_atoi,
         for (int j = min_y; j < max_y; j += 1) {
           if (b->is_trapped[m->x1][j]) {
             m->y2 = j;
+            break;
           }
         }
         move_is_correct = true;
