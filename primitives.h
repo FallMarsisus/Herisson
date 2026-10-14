@@ -9,10 +9,10 @@ program
 #define PRIMITIVES_H
 
 // GAME SIZE X is the number of columns
-#define GAME_SIZE_X 3
-#define GAME_SIZE_Y 3
+#define GAME_SIZE_X 9
+#define GAME_SIZE_Y 6
 
-#define N_PLAYERS 2 // <= 4 && > 0
+#define N_PLAYERS 4 // <= 4 && > 0
 #define N_HEDGE 4
 
 #define SCREEN_WIDTH 1360

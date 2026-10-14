@@ -51,7 +51,7 @@ bool test_possible_move(board_t *b, step s, int dice_roll) {
     }
     if (!possible_move) {
       ui_printf("Sorry, no possible move for you here.\n");
-      ui_show(); // let the user acknowledge
+      ui_show(b); // let the user acknowledge
       return possible_move;
     }
   }
@@ -64,7 +64,7 @@ bool test_possible_move(board_t *b, step s, int dice_roll) {
     }
     if (!possible_move) {
       ui_printf("Sorry, no possible move for you here.\n");
-      ui_show();
+      ui_show(b);
       return possible_move;
     }
   }

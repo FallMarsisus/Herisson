@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
     free(score_team[i]);
   }
 
-  ui_show();
+  ui_show(&boa);
 
   free(score_team);
 

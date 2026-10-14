@@ -80,7 +80,7 @@ void test_score(void) {
 
   free(trier_team);
 
-  ui_show();
+  ui_show(&boa);
 
   board_free(boa);
 }
