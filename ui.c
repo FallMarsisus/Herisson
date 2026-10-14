@@ -209,12 +209,12 @@ void ui_show(board_t* b) {
   if (mode == UI_MODE_GRAPHIC) {
 #ifdef ENABLE_GUI
 
-    float left_panel_w = SCREEN_WIDTH / 2.0f;
-    float box_w = left_panel_w - 60.0f;
-    float box_h = 60.0f;
+    float left_panel_w = SCREEN_WIDTH / 2;
+    float box_w = left_panel_w - 60;
+    float box_h = 60;
 
-    Rectangle box = {30.0f, (SCREEN_HEIGHT - box_h) - 50, box_w, box_h};
-    Rectangle btn_ok = {box.x + (box_w)-140.0f, box.y + 10.0f, 120.0f, 40.0f};
+    Rectangle box = {30, (SCREEN_HEIGHT - box_h) - 50, box_w, box_h};
+    Rectangle btn_ok = {box.x + (box_w)-140, box.y + 10, 120, 40};
 
     bool submit = false;
     while (!submit) {
