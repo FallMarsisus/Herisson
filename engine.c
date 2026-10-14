@@ -8,9 +8,9 @@ int min(int a, int b) { return (a < b ? a : b); }
 int play_turn(board_t *b) {
   int dice_roll = dice();
   static int winning_player = 0;
+  move *m = malloc(sizeof(move));
   for (int i = 0; i < 2; i += 1) {
-    move *m = malloc(sizeof(move));
-    m = scan_move(b, i, dice_roll);
+    scan_move(b, i, dice_roll, m);
     if (m->x1 == -1)
       continue;
     char player = board_pop(b, m->x1, m->y1);
@@ -25,14 +25,17 @@ int play_turn(board_t *b) {
   }
   if (b->game_is_finished) {
     if (b->current_player == N_PLAYERS - 1) {
+      free(m);
       return winning_player;
     }
   }
   b->current_player += 1;
   b->current_player %= N_PLAYERS;
+  free(m);
   return -1;
 }
 
+// test if the player has a play
 bool test_possible_move(board_t *b, step s, int dice_roll) {
   bool possible_move = false;
   if (s == VERTICAL) {
@@ -48,7 +51,7 @@ bool test_possible_move(board_t *b, step s, int dice_roll) {
     }
     if (!possible_move) {
       ui_printf("Sorry, no possible move for you here.\n");
-      ui_show(); // Let the user acknowledge
+      ui_show(); // let the user acknowledge
       return possible_move;
     }
   }
@@ -68,56 +71,9 @@ bool test_possible_move(board_t *b, step s, int dice_roll) {
   return possible_move;
 }
 
-int input_2_coordinate(unsigned int *x_atoi, unsigned int *y_atoi, step s,
-                       int dice_roll) {
-  // 0: error, -1: skip, 1: ok
-  char input[50];
-  fflush(stdin);
-  ui_scanf(" %49[^\n]", input);
-  if (strcmp(input, "skip") == 0) {
-    if (s == HORIZONTAL) {
-      ui_printf("Sorry, you cannot skip.\n");
-      return 0;
-    } else {
-      ui_printf("You skipped.\n");
-      return -1;
-    }
-  }
-  int ind_input = 0;
-  int ind_xy = 0;
-  char x_input[5] = {'\0'};
-  char y_input[5] = {'\0'};
-  bool is_sep = false;
-  while (input[ind_input] != '\0') {
-    if ('0' <= input[ind_input] && input[ind_input] <= '9') {
-      if (is_sep && s == VERTICAL) {
-        x_input[ind_xy] = input[ind_input];
-      } else {
-        y_input[ind_xy] = input[ind_input];
-      }
-      ind_xy += 1;
-    } else {
-      if (ind_xy > 0) {
-        if (s == HORIZONTAL)
-          break;
-        if (is_sep == true)
-          break;
-
-        is_sep = true;
-        ind_xy = 0;
-      }
-    }
-    ind_input += 1;
-  }
-  x_atoi[0] = (unsigned int)s == HORIZONTAL ? dice_roll : atoi(x_input);
-  y_atoi[0] = (unsigned int)atoi(y_input);
-  return 1;
-}
-
 // only reads the inputs, does not change the board ("getter")
-move *scan_move(board_t *b, step s, int dice_roll) {
+void scan_move(board_t *b, step s, int dice_roll, move* m) {
   ui_render_board(b, dice_roll - 1);
-  move *m = malloc(sizeof(move));
   bool is_correct = false;
   ui_printf("Player %c is currently playing. \n", b->current_player + 'A');
   ui_printf("Randomly selected line for the horizontal play: %d.\n", dice_roll);
@@ -125,7 +81,7 @@ move *scan_move(board_t *b, step s, int dice_roll) {
     bool possible_move = test_possible_move(b, s, dice_roll);
     if (!possible_move) {
       m->x1 = -1;
-      return m;
+      return;
     }
     ui_printf("[y%s] of the %s moving hedgehog.\n", s == VERTICAL ? ", x" : "",
               s == VERTICAL ? "vertically" : "horizontally");
@@ -133,13 +89,13 @@ move *scan_move(board_t *b, step s, int dice_roll) {
       ui_printf("Enter [skip] if you want to skip.\n");
     unsigned int x_atoi[1];
     unsigned int y_atoi[1];
-    int i2c = input_2_coordinate(x_atoi, y_atoi, s, dice_roll);
+    int i2c = am_input_2_coordinates(x_atoi, y_atoi, s, dice_roll);
     while (i2c == 0) {
-      i2c = input_2_coordinate(x_atoi, y_atoi, s, dice_roll);
+      i2c = am_input_2_coordinates(x_atoi, y_atoi, s, dice_roll);
     }
     if (i2c == -1) {
       m->x1 = -1;
-      return m;
+      return;
     }
     bool input_is_correct = test_input_is_correct(b, x_atoi[0], y_atoi[0]);
     if (!input_is_correct) {
@@ -174,14 +130,14 @@ move *scan_move(board_t *b, step s, int dice_roll) {
     }
     switch (s) {
     case (HORIZONTAL):
-      am_horizontal(b, m, x_atoi, y_atoi);
+      am_assign_move_horizontal(b, m, x_atoi, y_atoi, s, dice_roll);
       break;
     case (VERTICAL):
-      am_vertical(b, m, x_atoi, y_atoi);
+      am_assign_move_vertical(b, m, x_atoi, y_atoi, s, dice_roll);
       break;
     }
 
     is_correct = true;
   }
-  return m;
+  return;
 }

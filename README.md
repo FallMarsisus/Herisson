@@ -7,7 +7,7 @@ A Hedgehog racing game, by S. Lancelin and H. Bonfante, ENS Rennes.
 To use the program you'll need 
 - if you just want the console version, install gcc and make, and compile with `make`
 - if you want the gui version, install `raylib` ({https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux }[instructions here for Linux]), then compile with `make gui`, and execute the program with `-g` (or `--gui`).    
-- if you want the extension with all moves enabled, compile with `make` and then execute the program with `-am` or `--all-move`.
+- if you want the extension `all move`, compile with `make` and then execute the program with `-am` or `--all-move`.
 
 
 ## Modify the program 

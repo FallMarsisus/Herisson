@@ -19,11 +19,7 @@
 int min(int a, int b);
 int dice(void);
 int play_turn(board_t *b);
-
 bool test_possible_move(board_t *b, step s, int dice_roll);
-int input_2_coordinate(unsigned int *x_atoi, unsigned int *y_atoi, step s,
-                       int dice_roll);
-
-move *scan_move(board_t *b, step s, int dice_roll);
+void scan_move(board_t *b, step s, int dice_roll, move* m);
 
 #endif

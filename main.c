@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 
   srand(time(NULL));
 
-  // Check user input
+  // check user input
   if (GAME_SIZE_X <= 0 || GAME_SIZE_Y <= 0) {
     printf("[ERROR] Wrong game dimensions input !\n");
     return -1;
@@ -36,6 +36,8 @@ int main(int argc, char **argv) {
     return -1;
   }
 
+
+  // check whether modes are on
   bool is_gui = false;
   bool is_am = false;
 
@@ -66,6 +68,8 @@ int main(int argc, char **argv) {
     am_mode_init(CLASSIC);
   }
 
+
+  // beginning of the game
   board_t boa = board_init();
 
   int winning_player;
@@ -98,6 +102,7 @@ int main(int argc, char **argv) {
     score_team[nb_hedge][0] += 1;
   }
 
+  // scoring
   int rank = 1;
   for (int i = N_HEDGE - 1; i >= 0; i -= 1) {
     if (score_team[i][0] != 0) {
