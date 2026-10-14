@@ -13,14 +13,14 @@ OBJ_GUI    = $(SRC_GUI:.c=.o)
 EXEC = herisson
 
 
-ifeq ($(UNAME_S), Darwin)
+ifeq ($(UNAME_S), Darwin) # MAC OS
     RAYLIB_FLAGS = $(shell pkg-config --cflags raylib 2>/dev/null || echo "-I/opt/homebrew/include")
     RAYLIB_LIBS  = $(shell pkg-config --libs raylib 2>/dev/null || echo "-L/opt/homebrew/lib -lraylib") \
                    -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
-else
+else # Linux
     RAYLIB_FLAGS = $(shell pkg-config --cflags raylib 2>/dev/null)
     RAYLIB_LIBS  = $(shell pkg-config --libs --static raylib 2>/dev/null || echo "-lraylib -lGL -lm -lpthread -ldl -lrt -lX11")
-endif
+endif # If you are on windows, i'm sorry you'll have figure out by yourself how to compile...
 
 .PHONY: all gui clean
 
@@ -38,7 +38,7 @@ gui: clean_gui $(OBJ_GUI)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean_gui:
-	@rm -f main.o
+	@rm -f main.o ui.o
 
 clean:
 	rm -f *.o $(EXEC)

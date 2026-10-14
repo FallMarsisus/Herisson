@@ -1,179 +1,173 @@
 #include "all_move.h"
 
-am_mode a_mode ;
+am_mode a_mode;
 
-void am_mode_init(am_mode m){
-  a_mode = m;
-}
+void am_mode_init(am_mode m) { a_mode = m; }
 
-int i2c_horizontal(unsigned int* x_atoi, unsigned int* y_atoi){
-    char input[50];
-    fflush(stdin);
-    ui_scanf(" %49[^\n]", input);
-    if (strcmp(input, "skip") == 0) {
-        ui_printf("Sorry, you cannot skip.\n");
-        return 0;
-    }
-    int ind_input = 0;
-    int ind_xy = 0;
-    char x_input[5] = {'\0'};
-    char y_input[5] = {'\0'};
-    bool is_sep = false;
-    while (input[ind_input] != '\0') {
-      if ('0' <= input[ind_input] && input[ind_input] <= '9') {
-        if (is_sep) {
-          x_input[ind_xy] = input[ind_input];
-        } else {
-          y_input[ind_xy] = input[ind_input];
-        }
-        ind_xy += 1;
+int i2c_horizontal(unsigned int *x_atoi, unsigned int *y_atoi) {
+  char input[50];
+  fflush(stdin);
+  ui_scanf(" %49[^\n]", input);
+  if (strcmp(input, "skip") == 0) {
+    ui_printf("Sorry, you cannot skip.\n");
+    return 0;
+  }
+  int ind_input = 0;
+  int ind_xy = 0;
+  char x_input[5] = {'\0'};
+  char y_input[5] = {'\0'};
+  bool is_sep = false;
+  while (input[ind_input] != '\0') {
+    if ('0' <= input[ind_input] && input[ind_input] <= '9') {
+      if (is_sep) {
+        x_input[ind_xy] = input[ind_input];
       } else {
-        if (ind_xy > 0) {
-          if (is_sep == true)
-            return 1;
-
-          is_sep = true;
-          ind_xy = 0;
-        }
+        y_input[ind_xy] = input[ind_input];
       }
-      ind_input += 1;
+      ind_xy += 1;
+    } else {
+      if (ind_xy > 0) {
+        if (is_sep == true)
+          return 1;
+
+        is_sep = true;
+        ind_xy = 0;
+      }
     }
-    x_atoi[0] = (unsigned int) atoi(x_input);
-    y_atoi[0] = (unsigned int) atoi(y_input);
-    return 1;
+    ind_input += 1;
+  }
+  x_atoi[0] = (unsigned int)atoi(x_input);
+  y_atoi[0] = (unsigned int)atoi(y_input);
+  return 1;
 }
 
-bool test_input_is_correct(board_t* b, unsigned int x_atoi, unsigned int y_atoi){
-  bool input_is_correct = true ;
-    if (y_atoi == 0 || (x_atoi == 0)) {
-      ui_printf("It seems that your input is not a number or that you have "
-                "forgotten a coordinate.\n");
-      input_is_correct = false;
-      return input_is_correct;
-    }
-    if (x_atoi > (unsigned int)b->n_lines || y_atoi > (unsigned int)b->n_rows) {
-      ui_printf("It seems that your input is outside the board.\n");
-      input_is_correct = false;
-      return input_is_correct;
-    }
+bool test_input_is_correct(board_t *b, unsigned int x_atoi,
+                           unsigned int y_atoi) {
+  bool input_is_correct = true;
+  if (y_atoi == 0 || (x_atoi == 0)) {
+    ui_printf("It seems that your input is not a number or that you have "
+              "forgotten a coordinate.\n");
+    input_is_correct = false;
     return input_is_correct;
+  }
+  if (x_atoi > (unsigned int)b->n_lines || y_atoi > (unsigned int)b->n_rows) {
+    ui_printf("It seems that your input is outside the board.\n");
+    input_is_correct = false;
+    return input_is_correct;
+  }
+  return input_is_correct;
 }
 
-int valabs(int a){
-    return (a < 0 ? (-a) : a) ;
-}
+int valabs(int a) { return (a < 0 ? (-a) : a); }
 
-bool test_new_cell_is_ok(move* m){
-    bool cell_is_correct = (m->x1 == m->x2 || m->y1 == m->y2) ;
-    if(!cell_is_correct){
-        if(valabs(m->x1 - m->x2) == valabs(m->y1 - m->y2)){
-            cell_is_correct = true ;
-        }
+bool test_new_cell_is_ok(move *m) {
+  bool cell_is_correct = (m->x1 == m->x2 || m->y1 == m->y2);
+  if (!cell_is_correct) {
+    if (valabs(m->x1 - m->x2) == valabs(m->y1 - m->y2)) {
+      cell_is_correct = true;
     }
-    return cell_is_correct ;
+  }
+  return cell_is_correct;
 }
 
-void am_horizontal(board_t* b, move *m, unsigned int* x_atoi, unsigned int* y_atoi){
-  if(a_mode == CLASSIC){
+void am_horizontal(board_t *b, move *m, unsigned int *x_atoi,
+                   unsigned int *y_atoi) {
+  if (a_mode == CLASSIC) {
     m->x2 = x_atoi[0];
     m->y2 = y_atoi[0] + 1;
-  }
-  else{
+  } else {
     ui_printf("Coucou je suis pas cense etre la.\n");
-    bool move_is_correct = false ;
-    while(!move_is_correct){
-    ui_printf("[y, x] of the moving hedgehog.\n");
-    int i2c = i2c_horizontal(x_atoi, y_atoi);
-    while(i2c ==0){
-      i2c = i2c_horizontal(x_atoi, y_atoi);
-    }
-    bool input_is_correct = test_input_is_correct(b, x_atoi[0], y_atoi[0]);
-    if(!input_is_correct){
-      continue;
-    }
-    x_atoi[0] -= 1;
-    y_atoi[0] -= 1;
-    m->x2 = x_atoi[0];
-    m->y2 = y_atoi[0];
-    bool new_cell_is_ok = test_new_cell_is_ok(m);
-    if(new_cell_is_ok){
-      move_is_correct = true;
-    }
-    else{
-      ui_printf("You cannot move the hedgehog here.\n");
-    }
+    bool move_is_correct = false;
+    while (!move_is_correct) {
+      ui_printf("[y, x] of the moving hedgehog.\n");
+      int i2c = i2c_horizontal(x_atoi, y_atoi);
+      while (i2c == 0) {
+        i2c = i2c_horizontal(x_atoi, y_atoi);
+      }
+      bool input_is_correct = test_input_is_correct(b, x_atoi[0], y_atoi[0]);
+      if (!input_is_correct) {
+        continue;
+      }
+      x_atoi[0] -= 1;
+      y_atoi[0] -= 1;
+      m->x2 = x_atoi[0];
+      m->y2 = y_atoi[0];
+      bool new_cell_is_ok = test_new_cell_is_ok(m);
+      if (new_cell_is_ok) {
+        move_is_correct = true;
+      } else {
+        ui_printf("You cannot move the hedgehog here.\n");
+      }
     }
   }
   return;
 }
 
-void am_vertical(board_t* b,move*m, unsigned int* x_atoi, unsigned int* y_atoi){
-  if(a_mode == CLASSIC){
-      m->y2 = y_atoi[0];
-      if (board_top(b, x_atoi[0], y_atoi[0]) != b->current_player + 'A') {
-        ui_printf("You are trying to move the hedgehog of another player.\n");
-        return;
-      }
-      char side;
-      ui_printf("Choose a direction to move the hedgehog: [u] for up or [d] "
-                "for down.\n");
-      ui_scanf(" %c", &side);
-      switch (side) {
-      case ('H'):
-      case ('h'):
-      case ('T'):
-      case ('t'):
-      case ('U'):
-      case ('u'):
-        if (x_atoi[0] == 0) {
-          ui_printf("You cannot move higher.\n");
-          return;
-        }
-        m->x2 = x_atoi[0] - 1;
-        break;
-      case ('B'):
-      case ('b'):
-      case ('D'):
-      case ('d'):
-        if (x_atoi[0] == (unsigned int)b->n_lines - 1) {
-          ui_printf("You cannot move lower.\n");
-          return;
-        }
-        m->x2 = x_atoi[0] + 1;
-        break;
-      default:
-        ui_printf("It seems that you have made a mistake.\n");
-        return;
-      }
-    }
-    else{
-    ui_printf("Coucou je suis pas cense etre la.\n");
-    bool move_is_correct = false ;
-    while(!move_is_correct){
-    ui_printf("[y, x] of the moving hedgehog.\n");
-    int i2c = i2c_horizontal(x_atoi, y_atoi);
-    while(i2c ==0){
-      i2c = i2c_horizontal(x_atoi, y_atoi);
-    }
-    bool input_is_correct = test_input_is_correct(b, x_atoi[0], y_atoi[0]);
-    if(!input_is_correct){
-      continue;
-    }
-    x_atoi[0] -= 1;
-    y_atoi[0] -= 1;
-    m->x2 = x_atoi[0];
+void am_vertical(board_t *b, move *m, unsigned int *x_atoi,
+                 unsigned int *y_atoi) {
+  if (a_mode == CLASSIC) {
     m->y2 = y_atoi[0];
-    bool new_cell_is_ok = test_new_cell_is_ok(m);
-    if(new_cell_is_ok){
-      move_is_correct = true;
+    if (board_top(b, x_atoi[0], y_atoi[0]) != b->current_player + 'A') {
+      ui_printf("You are trying to move the hedgehog of another player.\n");
+      return;
     }
-    else{
-      ui_printf("You cannot move the hedgehog here.\n");
+    char side;
+    ui_printf("Choose a direction to move the hedgehog: [u] for up or [d] "
+              "for down.\n");
+    ui_scanf(" %c", &side);
+    switch (side) {
+    case ('H'):
+    case ('h'):
+    case ('T'):
+    case ('t'):
+    case ('U'):
+    case ('u'):
+      if (x_atoi[0] == 0) {
+        ui_printf("You cannot move higher.\n");
+        return;
+      }
+      m->x2 = x_atoi[0] - 1;
+      break;
+    case ('B'):
+    case ('b'):
+    case ('D'):
+    case ('d'):
+      if (x_atoi[0] == (unsigned int)b->n_lines - 1) {
+        ui_printf("You cannot move lower.\n");
+        return;
+      }
+      m->x2 = x_atoi[0] + 1;
+      break;
+    default:
+      ui_printf("It seems that you have made a mistake.\n");
+      return;
     }
+  } else {
+    ui_printf("Coucou je suis pas cense etre la.\n");
+    bool move_is_correct = false;
+    while (!move_is_correct) {
+      ui_printf("[y, x] of the moving hedgehog.\n");
+      int i2c = i2c_horizontal(x_atoi, y_atoi);
+      while (i2c == 0) {
+        i2c = i2c_horizontal(x_atoi, y_atoi);
+      }
+      bool input_is_correct = test_input_is_correct(b, x_atoi[0], y_atoi[0]);
+      if (!input_is_correct) {
+        continue;
+      }
+      x_atoi[0] -= 1;
+      y_atoi[0] -= 1;
+      m->x2 = x_atoi[0];
+      m->y2 = y_atoi[0];
+      bool new_cell_is_ok = test_new_cell_is_ok(m);
+      if (new_cell_is_ok) {
+        move_is_correct = true;
+      } else {
+        ui_printf("You cannot move the hedgehog here.\n");
+      }
     }
-    }
+  }
 }
-
 
 /*void input_to_coordinate(char* input, char* x_input, char* y_input, step s){
     int ind_input = 0;
@@ -203,10 +197,9 @@ void am_vertical(board_t* b,move*m, unsigned int* x_atoi, unsigned int* y_atoi){
     }
 }
 
-void test_input_is_correct(board_t* b, unsigned int x_atoi, unsigned int y_atoi){
-    if (y_atoi == 0 || (x_atoi == 0)) {
-      ui_printf("It seems that your input is not a number or that you have "
-                "forgotten a coordinate.\n");
+void test_input_is_correct(board_t* b, unsigned int x_atoi, unsigned int
+y_atoi){ if (y_atoi == 0 || (x_atoi == 0)) { ui_printf("It seems that your input
+is not a number or that you have " "forgotten a coordinate.\n");
     }
     if (x_atoi > (unsigned int)b->n_lines || y_atoi > (unsigned int)b->n_rows) {
       ui_printf("It seems that your input is outside the board.\n");
@@ -354,8 +347,8 @@ move am_scan_move(board_t *b, step s, int dice_roll) {
       y_atoi -= 1;
       new_cell_is_correct = test_new_cell_is_correct(m) ;
       if(!new_cell_is_correct){
-        ui_printf("This move is incorrect. You can only play horizontally or diagonally.\n") ;
-        continue ;
+        ui_printf("This move is incorrect. You can only play horizontally or
+diagonally.\n") ; continue ;
       }
       else{
         m.x2 = x_atoi;
@@ -378,8 +371,8 @@ move am_scan_move(board_t *b, step s, int dice_roll) {
       y_atoi -= 1;
       new_cell_is_correct = test_new_cell_is_correct(m) ;
       if(!new_cell_is_correct){
-        ui_printf("This move is incorrect. You can only play vertically or diagonally.\n") ;
-        continue ;
+        ui_printf("This move is incorrect. You can only play vertically or
+diagonally.\n") ; continue ;
       }
       else{
         m.x2 = x_atoi;

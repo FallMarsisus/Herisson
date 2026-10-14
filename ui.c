@@ -7,6 +7,9 @@ static board_t *last_board =
     NULL; // used to easily redraw the board on user interaction
 int last_highlight = -1;
 char history[1024]; // used to show text to the user
+Color list_teams[] = {
+    RED, BLUE, GREEN,
+    YELLOW}; // Colors of the teams, in order of their ID (A, B, C, D)
 #endif
 
 void ui_init(ui_mode m) {
@@ -19,6 +22,18 @@ void ui_init(ui_mode m) {
   }
 #endif
 }
+
+#ifdef ENABLE_GUI
+void show_team_colors() {
+  DrawText("Colors: ", 30, SCREEN_HEIGHT - 36, 20, BLACK);
+  for (int i = 0; i < N_PLAYERS; i += 1) {
+    DrawRectangle(110 + 50 * i, (SCREEN_HEIGHT - 46), 40, 40, list_teams[i]);
+    char team[2] = {i + 'A', '\0'};
+    DrawText(team, 123 + 50 * i, SCREEN_HEIGHT - 36, 20, WHITE);
+  }
+}
+
+#endif
 
 void ui_free(void) {
   assert(mode != UI_MODE_UNSET);
@@ -78,7 +93,7 @@ int ui_scanf(const char *format, ...) {
     float left_panel_w = SCREEN_WIDTH / 2.0f;
     float box_w = left_panel_w - 60.0f;
     float box_h = 240.0f;
-    Rectangle box = {30.0f, (SCREEN_HEIGHT - box_h) - 30, box_w, box_h};
+    Rectangle box = {30.0f, (SCREEN_HEIGHT - box_h) - 50, box_w, box_h};
     Rectangle text_box = {box.x + 20.0f, box.y + 80.0f, box_w - 40.0f, 40.0f};
     Rectangle btn_ok = {box.x + (box_w - 120.0f) / 2.0f, box.y + 140.0f, 120.0f,
                         40.0f};
@@ -141,6 +156,8 @@ int ui_scanf(const char *format, ...) {
       gui_render_board(last_board, last_highlight);
       show_history();
 
+      show_team_colors();
+
       DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
 
       DrawRectangleRec(box, WHITE);
@@ -176,9 +193,11 @@ int ui_scanf(const char *format, ...) {
 
 void ui_show() {
   if (mode == UI_MODE_TERM) {
-      int c;
-      while ((c = getchar()) != '\n' && c != EOF)
-        ;
+    int c;
+    printf("Press [enter] to continue.\n");
+    while ((c = getchar()) != '\n' && c != EOF)
+      ;
+
     return;
   }
 
@@ -189,7 +208,7 @@ void ui_show() {
     float box_w = left_panel_w - 60.0f;
     float box_h = 60.0f;
 
-    Rectangle box = {30.0f, (SCREEN_HEIGHT - box_h) - 30, box_w, box_h};
+    Rectangle box = {30.0f, (SCREEN_HEIGHT - box_h) - 50, box_w, box_h};
     Rectangle btn_ok = {box.x + (box_w)-140.0f, box.y + 10.0f, 120.0f, 40.0f};
 
     bool submit = false;
@@ -209,6 +228,8 @@ void ui_show() {
 
       gui_render_board(last_board, last_highlight);
       show_history();
+
+      show_team_colors();
 
       DrawLine(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, LIGHTGRAY);
 
@@ -262,7 +283,6 @@ void ui_render_board(board_t *b, int highlighted_line) {
 #ifdef ENABLE_GUI
 void gui_render_cell(board_t *b, int line, int row) {
 
-  Color list_teams[] = {RED, BLUE, GREEN, YELLOW};
   int cell_width = (SCREEN_WIDTH / 2 - 50) / b->n_rows - 5;
   int cell_height = (SCREEN_HEIGHT - 60) / b->n_lines - 10;
   int cell_x =

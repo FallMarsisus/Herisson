@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "primitives.h"
 #include "all_move.h"
+#include "primitives.h"
 #include "string.h"
 #include "tests.h"
 #include "ui.h"
@@ -39,11 +39,11 @@ int main(int argc, char **argv) {
   bool is_gui = false;
   bool is_am = false;
 
-  for(int i = 1; i < argc; i++) {
-    if(strcmp(argv[i], "--gui") == 0 || strcmp(argv[i], "-g") == 0) {
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--gui") == 0 || strcmp(argv[i], "-g") == 0) {
       is_gui = true;
     }
-    if(strcmp(argv[i], "-am") == 0 || strcmp(argv[i], "--all-move") == 0) {
+    if (strcmp(argv[i], "-am") == 0 || strcmp(argv[i], "--all-move") == 0) {
       is_am = true;
     }
   }
@@ -59,13 +59,12 @@ int main(int argc, char **argv) {
   } else {
     ui_init(UI_MODE_TERM);
   }
-  
-  if(is_am) {
+
+  if (is_am) {
     am_mode_init(ALL_MOVE);
   } else {
     am_mode_init(CLASSIC);
   }
-  
 
   board_t boa = board_init();
 
