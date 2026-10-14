@@ -4,6 +4,8 @@ int dice(void) { return rand() % GAME_SIZE_Y + 1; }
 
 int min(int a, int b) { return (a < b ? a : b); }
 
+extern am_mode a_mode;
+
 // recieves the inputs, changes the board ("setter")
 int play_turn(board_t *b) {
   int dice_roll = dice();
@@ -83,7 +85,7 @@ void scan_move(board_t *b, step s, int dice_roll, move* m) {
       m->x1 = -1;
       return;
     }
-    ui_printf("[y%s] of the %s moving hedgehog.\n", s == VERTICAL ? ", x" : "",
+    ui_printf("[y%s] of the %s moving hedgehog.\n", (s == VERTICAL) ? ", x" : "",
               s == VERTICAL ? "vertically" : "horizontally");
     if (s == VERTICAL)
       ui_printf("Enter [skip] if you want to skip.\n");
@@ -130,10 +132,12 @@ void scan_move(board_t *b, step s, int dice_roll, move* m) {
     }
     switch (s) {
     case (HORIZONTAL):
-      am_assign_move_horizontal(b, m, x_atoi, y_atoi, s, dice_roll);
+      am_assign_move_horizontal(b, m, x_atoi, y_atoi, s);
       break;
     case (VERTICAL):
-      am_assign_move_vertical(b, m, x_atoi, y_atoi, s, dice_roll);
+      if (am_assign_move_vertical(b, m, x_atoi, y_atoi, s, dice_roll) == -1) {
+        continue;
+      }
       break;
     }
 
