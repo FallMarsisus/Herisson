@@ -39,8 +39,4 @@ void am_assign_move_horizontal(board_t *b, move *m, unsigned int *x_atoi,
 int am_assign_move_vertical(board_t *b, move *m, unsigned int *x_atoi,
                             unsigned int *y_atoi, step s, int dice_roll);
 
-/*void input_to_coordinate(char* input, char* x_input, char* y_input, step s) ;
-void test_input_is_correct(board_t* b, unsigned int x_atoi, unsigned int y_atoi)
-; move am_scan_move(board_t *b, step s, int dice_roll);*/
-
 #endif
