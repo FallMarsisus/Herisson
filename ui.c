@@ -92,14 +92,14 @@ int ui_scanf(const char *format, ...) {
     bool show_error = false;
     int ret = 0;
 
-    /* Disposition centrée dans la moitié GAUCHE de l'écran */
-    float left_panel_w = SCREEN_WIDTH / 2.0f;
-    float box_w = left_panel_w - 60.0f;
-    float box_h = 240.0f;
-    Rectangle box = {30.0f, (SCREEN_HEIGHT - box_h) - 50, box_w, box_h};
-    Rectangle text_box = {box.x + 20.0f, box.y + 80.0f, box_w - 40.0f, 40.0f};
-    Rectangle btn_ok = {box.x + (box_w - 120.0f) / 2.0f, box.y + 140.0f, 120.0f,
-                        40.0f};
+    /* Centered to the left */
+    float left_panel_w = SCREEN_WIDTH / 2;
+    float box_w = left_panel_w - 60;
+    float box_h = 240;
+    Rectangle box = {30, (SCREEN_HEIGHT - box_h) - 50, box_w, box_h};
+    Rectangle text_box = {box.x + 20, box.y + 80, box_w - 40, 40};
+    Rectangle btn_ok = {box.x + (box_w - 120) / 2, box.y + 140, 120,
+                        40};
 
     int frames_counter = 0;
 
