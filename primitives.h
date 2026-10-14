@@ -2,6 +2,7 @@
 
 --> Used to centralised constants, and essential structures used along the
 program
+--> If you, the user, modifies something, don't forget to "make clean" before recompiling.
 
 */
 

@@ -78,6 +78,9 @@ int ui_scanf(const char *format, ...) {
     va_start(args, format);
     int ret = vscanf(format, args);
     va_end(args);
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+      ;
     return ret;
   }
 
