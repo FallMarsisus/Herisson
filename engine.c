@@ -74,7 +74,7 @@ bool test_possible_move(board_t *b, step s, int dice_roll) {
 }
 
 // only reads the inputs, does not change the board ("getter")
-void scan_move(board_t *b, step s, int dice_roll, move* m) {
+void scan_move(board_t *b, step s, int dice_roll, move *m) {
   ui_render_board(b, dice_roll - 1);
   bool is_correct = false;
   ui_printf("Player %c is currently playing. \n", b->current_player + 'A');
@@ -85,7 +85,8 @@ void scan_move(board_t *b, step s, int dice_roll, move* m) {
       m->x1 = -1;
       return;
     }
-    ui_printf("[y%s] of the %s moving hedgehog.\n", (s == VERTICAL) ? ", x" : "",
+    ui_printf("[y%s] of the %s moving hedgehog.\n",
+              (s == VERTICAL) ? ", x" : "",
               s == VERTICAL ? "vertically" : "horizontally");
     if (s == VERTICAL)
       ui_printf("Enter [skip] if you want to skip.\n");

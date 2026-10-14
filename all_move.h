@@ -29,15 +29,15 @@ int min(int a, int b);
 void am_mode_init(am_mode m);
 bool test_possible_move(board_t *b, step s, int dice_roll);
 int am_input_2_coordinates(unsigned int *x_atoi, unsigned int *y_atoi, step s,
-                       int dice_roll);
+                           int dice_roll);
 bool test_input_is_correct(board_t *b, unsigned int x_atoi,
                            unsigned int y_atoi);
 int test_move_is_ok(move *m);
 int valabs(int a);
 void am_assign_move_horizontal(board_t *b, move *m, unsigned int *x_atoi,
-                   unsigned int *y_atoi, step s);
+                               unsigned int *y_atoi, step s);
 int am_assign_move_vertical(board_t *b, move *m, unsigned int *x_atoi,
-                 unsigned int *y_atoi, step s, int dice_roll);
+                            unsigned int *y_atoi, step s, int dice_roll);
 
 /*void input_to_coordinate(char* input, char* x_input, char* y_input, step s) ;
 void test_input_is_correct(board_t* b, unsigned int x_atoi, unsigned int y_atoi)

@@ -36,7 +36,6 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-
   // check whether modes are on
   bool is_gui = false;
   bool is_am = false;
@@ -67,7 +66,6 @@ int main(int argc, char **argv) {
   } else {
     am_mode_init(CLASSIC);
   }
-
 
   // beginning of the game
   board_t boa = board_init();

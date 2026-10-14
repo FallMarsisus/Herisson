@@ -98,8 +98,7 @@ int ui_scanf(const char *format, ...) {
     float box_h = 240;
     Rectangle box = {30, (SCREEN_HEIGHT - box_h) - 50, box_w, box_h};
     Rectangle text_box = {box.x + 20, box.y + 80, box_w - 40, 40};
-    Rectangle btn_ok = {box.x + (box_w - 120) / 2, box.y + 140, 120,
-                        40};
+    Rectangle btn_ok = {box.x + (box_w - 120) / 2, box.y + 140, 120, 40};
 
     int frames_counter = 0;
 
@@ -194,10 +193,10 @@ int ui_scanf(const char *format, ...) {
   return 0;
 }
 
-void ui_show(board_t* b) {
+void ui_show(board_t *b) {
   if (mode == UI_MODE_TERM) {
     int c;
-    if(!b -> game_is_finished){
+    if (!b->game_is_finished) {
       printf("Press [enter] to continue.\n");
     }
     while ((c = getchar()) != '\n' && c != EOF)
