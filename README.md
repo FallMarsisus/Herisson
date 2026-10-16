@@ -13,3 +13,8 @@ To use the program you'll need
 ## Modify the program 
  
 Everything we allow the player to modify in the code is situated on `primitives.h`, feel free to play with the parameters.
+
+## Copyright 
+<img width="120" height="42" alt="image" src="https://github.com/user-attachments/assets/2ca2ded8-629f-42e5-b3ea-28586da0e4c1" />
+
+This program falls under the CC-BY-NC-SA copyright, meaning no reuse without credit, no commercial use, and share with the same conditions. 
